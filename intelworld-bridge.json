@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "apiUrl": "https://minecraftic.ru/api/server",
+  "updateInterval": 30,
+  "serverName": "IntelWorld",
+  "apiKey": ""
+}
