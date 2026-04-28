@@ -5,9 +5,11 @@ import { Wallet, Send, History, TrendingUp, CreditCard, ArrowUpRight, ArrowDownL
 
 interface BankAccount {
   accountNumber: string;
-  balance: number;
+  balance?: number;
   createdAt: number;
   isGovernment?: boolean;
+  ownerUuid?: string;
+  ownerName?: string;
 }
 
 interface Transaction {
@@ -63,11 +65,23 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
 
         if (createResponse.ok) {
           const data = await createResponse.json();
+          // Получаем баланс для личного счета
+          const balanceResponse = await fetch(`/api/bank/balance?uuid=${uuid}`);
+          if (balanceResponse.ok) {
+            const balanceData = await balanceResponse.json();
+            data.balance = balanceData.balance;
+          }
           setAccount(data);
           setHasAccount(true);
         }
       } else {
         const data = await personalResponse.json();
+        // Получаем баланс для личного счета
+        const balanceResponse = await fetch(`/api/bank/balance?uuid=${uuid}`);
+        if (balanceResponse.ok) {
+          const balanceData = await balanceResponse.json();
+          data.balance = balanceData.balance;
+        }
         setAccount(data);
         setHasAccount(true);
       }
@@ -87,12 +101,28 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
 
             if (createGovResponse.ok) {
               const govData = await createGovResponse.json();
+              // Получаем баланс для государственного счета (используем специальный UUID для 0000)
+              const govBalanceResponse = await fetch(`/api/bank/balance?accountNumber=0000`);
+              if (govBalanceResponse.ok) {
+                const govBalanceData = await govBalanceResponse.json();
+                govData.balance = govBalanceData.balance;
+              } else {
+                govData.balance = 0;
+              }
               setGovernmentAccount(govData);
             } else {
               console.error('Failed to create government account');
             }
           } else {
             const govData = await govResponse.json();
+            // Получаем баланс для государственного счета
+            const govBalanceResponse = await fetch(`/api/bank/balance?accountNumber=0000`);
+            if (govBalanceResponse.ok) {
+              const govBalanceData = await govBalanceResponse.json();
+              govData.balance = govBalanceData.balance;
+            } else {
+              govData.balance = 0;
+            }
             setGovernmentAccount(govData);
           }
         } catch (govError) {
@@ -206,7 +236,7 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
   };
 
   const currentAccount = activeAccountType === 'government' ? governmentAccount : account;
-  const currentBalance = currentAccount?.balance || initialBalance;
+  const currentBalance = currentAccount?.balance ?? 0;
 
   if (loading) {
     return (

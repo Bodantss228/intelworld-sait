@@ -167,6 +167,14 @@ export default function GovernmentPage() {
   return (
     <div className="min-h-screen bg-black py-20">
       <div className="container mx-auto px-6">
+        <Link
+          href="/profile"
+          className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6"
+        >
+          <span>←</span>
+          <span>Назад в личный кабинет</span>
+        </Link>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

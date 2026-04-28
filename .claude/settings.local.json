@@ -57,7 +57,12 @@
       "Bash(git remote *)",
       "Bash(git branch *)",
       "Bash(git push *)",
-      "Bash(git commit -m 'Fix: votings display filter, transaction history in BankSystem *)"
+      "Bash(git commit -m 'Fix: votings display filter, transaction history in BankSystem *)",
+      "Bash(awk *)",
+      "Bash(head -554 \"C:\\\\Users\\\\grinb\\\\Downloads\\\\сайт intel\\\\app\\\\profile\\\\page.tsx\")",
+      "Bash(tail -n +809 \"C:\\\\Users\\\\grinb\\\\Downloads\\\\сайт intel\\\\app\\\\profile\\\\page.tsx\")",
+      "Bash(mv /tmp/profile_temp.tsx \"C:\\\\Users\\\\grinb\\\\Downloads\\\\сайт intel\\\\app\\\\profile\\\\page.tsx\")",
+      "Bash(git commit -m 'Major fixes: separate account balances, fine payment, players, government redirect *)"
     ]
   }
 }

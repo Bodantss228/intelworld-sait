@@ -90,21 +90,10 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
-    if (activeTab === 'government') {
-      if (governmentSubTab === 'news') {
-        fetchPosts();
-      } else if (governmentSubTab === 'voting') {
-        fetchVotings();
-        // Автообновление голосований каждые 10 секунд
-        const interval = setInterval(fetchVotings, 10000);
-        return () => clearInterval(interval);
-      } else if (governmentSubTab === 'fines') {
-        fetchFines();
-      }
-    } else if (activeTab === 'players') {
+    if (activeTab === 'players') {
       fetchPlayers();
     }
-  }, [activeTab, governmentSubTab]);
+  }, [activeTab]);
 
   const fetchProfile = async () => {
     try {
@@ -427,17 +416,13 @@ export default function ProfilePage() {
                 <span className="font-medium">Игроки</span>
               </button>
 
-              <button
-                onClick={() => setActiveTab('government')}
-                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${
-                  activeTab === 'government'
-                    ? 'bg-yellow-500/10 text-yellow-500 border-l-4 border-yellow-500'
-                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-                }`}
+              <Link
+                href="/government"
+                className="w-full flex items-center gap-3 px-4 py-3 transition-colors text-gray-400 hover:bg-gray-800 hover:text-white"
               >
                 <Building2 size={20} />
                 <span className="font-medium">Правительство</span>
-              </button>
+              </Link>
             </nav>
           </aside>
 
@@ -567,260 +552,6 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {activeTab === 'government' && (
-              <div className="space-y-6">
-                <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                  <h3 className="text-2xl font-bold mb-6">Правительство</h3>
-
-                  <div className="flex gap-2 mb-6 overflow-x-auto">
-                    {[
-                      { id: 'news', label: 'Новости' },
-                      { id: 'voting', label: 'Голосования' },
-                      { id: 'fines', label: 'Штрафы' },
-                      { id: 'notifications', label: 'Уведомления' },
-                    ].map((tab) => (
-                      <button
-                        key={tab.id}
-                        onClick={() => setGovernmentSubTab(tab.id as GovernmentSubTab)}
-                        className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-                          governmentSubTab === tab.id
-                            ? 'bg-yellow-500 text-black'
-                            : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                        }`}
-                      >
-                        {tab.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="bg-black/50 rounded-lg p-8">
-                    {/* Новости */}
-                    {governmentSubTab === 'news' && (
-                      <div className="space-y-6">
-                        <div className="flex justify-between items-center mb-4">
-                          <h4 className="text-xl font-bold">Новости</h4>
-                          {(profile?.role === 'president' || profile?.role === 'media') && (
-                            <Link
-                              href="/government/create-post"
-                              className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-purple-500 text-black font-semibold rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
-                            >
-                              <Plus size={16} />
-                              Создать пост
-                            </Link>
-                          )}
-                        </div>
-
-                        {posts.length === 0 ? (
-                          <div className="text-center text-gray-400">
-                            <Newspaper size={48} className="mx-auto mb-4 opacity-50" />
-                            <p>Новостей пока нет</p>
-                          </div>
-                        ) : (
-                          <div className="space-y-4">
-                            {posts.map((post) => (
-                              <div key={post.id} className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                                <h5 className="text-xl font-bold mb-2">{post.title}</h5>
-                                <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
-                                  <span className="flex items-center gap-1">
-                                    <User size={14} />
-                                    {post.author}
-                                  </span>
-                                  <span className="flex items-center gap-1">
-                                    <Calendar size={14} />
-                                    {new Date(post.createdAt).toLocaleDateString('ru-RU')}
-                                  </span>
-                                </div>
-                                {post.tags && post.tags.length > 0 && (
-                                  <div className="flex gap-2 mb-4">
-                                    {post.tags.map((tag, idx) => (
-                                      <span key={idx} className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs">
-                                        #{tag}
-                                      </span>
-                                    ))}
-                                  </div>
-                                )}
-                                <p className="text-gray-300 whitespace-pre-wrap">{post.content}</p>
-                                {post.imageUrl && (
-                                  <img src={post.imageUrl} alt={post.title} className="mt-4 rounded-lg max-w-full" />
-                                )}
-                                {post.videoUrl && (
-                                  <video src={post.videoUrl} controls className="mt-4 rounded-lg max-w-full" />
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Голосования */}
-                    {governmentSubTab === 'voting' && (
-                      <div className="space-y-6">
-                        <div className="flex justify-between items-center mb-4">
-                          <h4 className="text-xl font-bold">Голосования</h4>
-                          {(profile?.role === 'president' || profile?.role === 'media') && (
-                            <Link
-                              href="/government/create-voting"
-                              className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-purple-500 text-black font-semibold rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
-                            >
-                              <Plus size={16} />
-                              Создать голосование
-                            </Link>
-                          )}
-                        </div>
-
-                        {votings.length === 0 ? (
-                          <div className="text-center text-gray-400">
-                            <Vote size={48} className="mx-auto mb-4 opacity-50" />
-                            <p>Активных голосований нет</p>
-                          </div>
-                        ) : (
-                          <div className="space-y-4">
-                            {votings
-                              .filter((voting) => voting.active)
-                              .map((voting) => {
-                              const totalVotes = voting.options.reduce((sum, opt) => sum + opt.votes, 0);
-                              const hasVoted = profile && voting.votes[profile.uuid];
-
-                              return (
-                                <div key={voting.id} className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                                  <div className="mb-4">
-                                    <h5 className="text-xl font-bold mb-2">{voting.title}</h5>
-                                    <p className="text-gray-400 text-sm mb-2">{voting.description}</p>
-                                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                                      <span>Создал: {voting.createdBy}</span>
-                                      <span>Завершится: {new Date(voting.endsAt).toLocaleString('ru-RU')}</span>
-                                    </div>
-                                  </div>
-
-                                  {voting.imageUrl && (
-                                    <img
-                                      src={voting.imageUrl}
-                                      alt={voting.title}
-                                      className="mb-4 rounded-lg max-w-full"
-                                      crossOrigin="anonymous"
-                                      onError={(e) => {
-                                        e.currentTarget.style.display = 'none';
-                                      }}
-                                    />
-                                  )}
-
-                                  <div className="space-y-3">
-                                    {voting.options.map((option) => {
-                                      const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
-
-                                      return (
-                                        <div key={option.id} className="space-y-2">
-                                          <div className="flex justify-between items-center">
-                                            <span className="text-gray-300">{option.text}</span>
-                                            <span className="text-sm text-gray-400">
-                                              {option.votes} ({percentage.toFixed(1)}%)
-                                            </span>
-                                          </div>
-                                          <div className="w-full bg-gray-800 rounded-full h-2">
-                                            <div
-                                              className="bg-gradient-to-r from-yellow-500 to-purple-500 h-2 rounded-full transition-all"
-                                              style={{ width: `${percentage}%` }}
-                                            />
-                                          </div>
-                                          {!hasVoted && (
-                                            <button
-                                              onClick={() => handleVote(voting.id, option.id)}
-                                              className="w-full mt-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors text-sm"
-                                            >
-                                              Голосовать
-                                            </button>
-                                          )}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-
-                                  {hasVoted && (
-                                    <p className="mt-4 text-sm text-green-400">✓ Вы уже проголосовали</p>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Штрафы */}
-                    {governmentSubTab === 'fines' && (
-                      <div className="space-y-6">
-                        <div className="flex justify-between items-center mb-4">
-                          <h4 className="text-xl font-bold">Штрафы</h4>
-                          {profile?.role === 'president' && (
-                            <Link
-                              href="/government/create-fine"
-                              className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-purple-500 text-black font-semibold rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
-                            >
-                              <Plus size={16} />
-                              Выписать штраф
-                            </Link>
-                          )}
-                        </div>
-
-                        {fines.length === 0 ? (
-                          <div className="text-center text-gray-400">
-                            <AlertCircle size={48} className="mx-auto mb-4 opacity-50" />
-                            <p>Штрафов нет</p>
-                          </div>
-                        ) : (
-                          <div className="space-y-4">
-                            {fines.map((fine) => (
-                              <div key={fine.id} className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                                <div className="flex justify-between items-start mb-4">
-                                  <div>
-                                    <h5 className="text-lg font-bold text-red-400">
-                                      Штраф: {fine.amount} алмазов
-                                    </h5>
-                                    <p className="text-gray-400 text-sm mt-1">Игрок: {fine.playerName}</p>
-                                  </div>
-                                  {fine.paid ? (
-                                    <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded text-sm">
-                                      Оплачено
-                                    </span>
-                                  ) : (
-                                    <span className="px-3 py-1 bg-red-500/20 text-red-300 rounded text-sm">
-                                      Не оплачено
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-gray-300 mb-4">{fine.reason}</p>
-                                <div className="flex items-center gap-4 text-xs text-gray-500">
-                                  <span>Выписал: {fine.issuedBy}</span>
-                                  <span>{new Date(fine.issuedAt).toLocaleString('ru-RU')}</span>
-                                </div>
-                                {!fine.paid && profile?.uuid === fine.playerUuid && (
-                                  <button
-                                    onClick={() => handlePayFine(fine.id)}
-                                    className="mt-4 w-full px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-colors"
-                                  >
-                                    Оплатить штраф
-                                  </button>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Уведомления */}
-                    {governmentSubTab === 'notifications' && (
-                      <div className="text-center text-gray-400">
-                        <Bell size={48} className="mx-auto mb-4 opacity-50" />
-                        <p>Уведомлений нет</p>
-                        <p className="text-sm text-gray-500 mt-2">Здесь будут отображаться важные уведомления</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
           </main>
         </div>
 
