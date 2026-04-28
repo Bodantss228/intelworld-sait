@@ -186,7 +186,7 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
       return;
     }
 
-    if (amount > currentAccount.balance) {
+    if (amount > (currentAccount.balance ?? 0)) {
       alert('Недостаточно средств на счете');
       return;
     }
