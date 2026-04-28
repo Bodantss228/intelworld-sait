@@ -40,6 +40,7 @@ const ITEMS = [
   { id: 'Copper_Ingot', name: 'Медный слиток', image: '/photo/Copper_Ingot.png' },
   { id: 'Netherite_Ingot', name: 'Незеритовый слиток', image: '/photo/Netherite_Ingot.png' },
   { id: 'Netherite_Scrap', name: 'Незеритовый скрап', image: '/photo/Netherite_Scrap.png' },
+  { id: 'Deepslate_Diamond_Ore', name: 'АР', image: '/photo/Deepslate_Diamond_Ore.png' },
 ];
 
 interface BankSystemProps {
@@ -68,9 +69,9 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
   const [exchangeRates, setExchangeRates] = useState<ExchangeRate[]>([]);
   const [showCreateRateModal, setShowCreateRateModal] = useState(false);
   const [fromItem, setFromItem] = useState('Diamond');
-  const [fromAmount, setFromAmount] = useState(1);
+  const [fromAmount, setFromAmount] = useState(1.0);
   const [toItem, setToItem] = useState('Emerald');
-  const [toAmount, setToAmount] = useState(1);
+  const [toAmount, setToAmount] = useState(1.0);
 
   const isBanker = isBankerProp || role === 'banker';
   const isPresident = isPresidentProp || role === 'president';
@@ -217,9 +218,9 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
         setShowCreateRateModal(false);
         fetchExchangeRates();
         setFromItem('Diamond');
-        setFromAmount(1);
+        setFromAmount(1.0);
         setToItem('Emerald');
-        setToAmount(1);
+        setToAmount(1.0);
       }
     } catch (error) {
       console.error('Error creating rate:', error);
@@ -246,7 +247,8 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
       const response = await fetch(`/api/bank/transactions/all?bankerUuid=${uuid}&limit=100`);
       if (response.ok) {
         const data = await response.json();
-        setAllTransactions(data.transactions || []);
+        // Переворачиваем массив чтобы новые были первыми
+        setAllTransactions((data.transactions || []).reverse());
       }
     } catch (error) {
       console.error('Error fetching all transactions:', error);
@@ -687,9 +689,10 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
                   </select>
                   <input
                     type="number"
-                    min="1"
+                    min="0.1"
+                    step="0.1"
                     value={fromAmount}
-                    onChange={(e) => setFromAmount(parseInt(e.target.value) || 1)}
+                    onChange={(e) => setFromAmount(parseFloat(e.target.value) || 0.1)}
                     className="bg-black border border-gray-700 rounded-lg px-4 py-3 text-white"
                     placeholder="Количество"
                   />
@@ -714,9 +717,10 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
                   </select>
                   <input
                     type="number"
-                    min="1"
+                    min="0.1"
+                    step="0.1"
                     value={toAmount}
-                    onChange={(e) => setToAmount(parseInt(e.target.value) || 1)}
+                    onChange={(e) => setToAmount(parseFloat(e.target.value) || 0.1)}
                     className="bg-black border border-gray-700 rounded-lg px-4 py-3 text-white"
                     placeholder="Количество"
                   />
@@ -769,11 +773,13 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className={`text-xl font-bold ${tx.type === 'deposit' ? 'text-green-500' : 'text-red-500'}`}>
-                        {tx.type === 'deposit' ? '+' : '-'}{tx.amount} 💎
+                      <p className={`text-xl font-bold flex items-center gap-2 justify-end ${tx.type === 'deposit' ? 'text-green-500' : 'text-red-500'}`}>
+                        {tx.type === 'deposit' ? '+' : '-'}{tx.amount}
+                        <img src="/photo/Diamond.png" alt="Алмаз" className="w-5 h-5 inline" />
                       </p>
-                      <p className="text-sm text-gray-400">
-                        Баланс: {tx.balanceAfter} 💎
+                      <p className="text-sm text-gray-400 flex items-center gap-1 justify-end">
+                        Баланс: {tx.balanceAfter}
+                        <img src="/photo/Diamond.png" alt="Алмаз" className="w-4 h-4 inline" />
                       </p>
                     </div>
                   </div>
