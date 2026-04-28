@@ -24,6 +24,7 @@ interface Transaction {
   amount: number;
   balanceAfter: number;
   executorName: string;
+  description?: string;
 }
 
 interface Post {
@@ -627,6 +628,12 @@ export default function ProfilePage() {
                                   <p className="text-white font-medium">{tx.executorName}</p>
                                 </div>
                               </div>
+                              {tx.description && (
+                                <div className="mt-2 text-sm">
+                                  <p className="text-gray-500">Комментарий:</p>
+                                  <p className="text-gray-300">{tx.description}</p>
+                                </div>
+                              )}
                             </div>
                             <div className="text-right ml-4">
                               <p className={`text-2xl font-bold ${
