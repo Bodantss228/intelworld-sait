@@ -35,43 +35,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Штраф уже оплачен' }, { status: 400 });
     }
 
-    // Выполняем перевод с личного счета игрока на государственный счет (0000)
-    const transferResponse = await fetch(`${MINECRAFT_SERVER_URL}/api/bank/transfer`, {
+    // Оплачиваем штраф через новый endpoint мода
+    const payResponse = await fetch(`${MINECRAFT_SERVER_URL}/api/government/fine/pay`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        fromType: 'uuid',
-        from: uuid,
-        toType: 'account',
-        to: '0000',
-        amount: fine.amount,
-        description: `Оплата штрафа: ${fine.reason}`,
+        fineId,
+        playerUuid: uuid,
       }),
     });
 
-    if (!transferResponse.ok) {
-      const errorData = await transferResponse.json().catch(() => ({ error: 'Недостаточно средств для оплаты штрафа' }));
-      return NextResponse.json({ error: errorData.error || 'Ошибка при переводе средств' }, { status: transferResponse.status });
-    }
-
-    // Помечаем штраф как оплаченный (если есть такой endpoint в моде)
-    // Если нет - перевод уже выполнен, это главное
-    try {
-      await fetch(`${MINECRAFT_SERVER_URL}/api/government/fine/pay`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fineId,
-          playerUuid: uuid,
-        }),
-      });
-    } catch (err) {
-      // Игнорируем ошибку, главное что перевод выполнен
-      console.log('Fine marking as paid failed, but transfer succeeded');
+    if (!payResponse.ok) {
+      const errorData = await payResponse.json().catch(() => ({ error: 'Ошибка при оплате штрафа' }));
+      return NextResponse.json({ error: errorData.error || 'Ошибка при оплате штрафа' }, { status: payResponse.status });
     }
 
     return NextResponse.json({

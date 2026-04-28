@@ -66,22 +66,13 @@ export default function Home() {
           </motion.h1>
 
           <motion.div
-            className="text-xl md:text-3xl text-gray-400 mb-3 font-light"
+            className="text-xl md:text-3xl text-gray-400 mb-12 font-light"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.4 }}
           >
             Сезон 5: <span className="text-secondary italic">"What If..."</span>
           </motion.div>
-
-          <motion.p
-            className="text-gray-500 mb-12 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.6 }}
-          >
-            Исследование альтернативных реальностей. Временные аномалии. Мультивселенная.
-          </motion.p>
 
           <motion.div
             className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16"
@@ -120,15 +111,6 @@ export default function Home() {
               )}
             </div>
           </motion.div>
-
-          <motion.div
-            className="text-xs text-gray-600 uppercase tracking-wider"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1 }}
-          >
-            Ванилла+ • Fabric • Дружеское сообщество
-          </motion.div>
         </div>
 
         <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10">
@@ -144,59 +126,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="container mx-auto px-6 py-32">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
-          <h2 className="text-5xl font-bold mb-6">
-            <span className="gradient-text">Нексус Времени</span>
-          </h2>
-          <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-            Погрузитесь в мир, где каждое решение создает новую реальность.
-            Уникальная экосистема с банковской системой, маркетплейсами и ИИ-персонажем.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              title: 'Банковская система',
-              description: 'Алмазы как валюта. Синхронизация с Telegram ботом и Mini App.',
-              icon: '💎',
-            },
-            {
-              title: 'Маркетплейсы',
-              description: 'Авито для торговли и WB для обмена кастомными 3D-моделями.',
-              icon: '🛒',
-            },
-            {
-              title: 'ИИ Клео',
-              description: 'Персональный ассистент на базе API Алисы. Музыка, диалоги, помощь.',
-              icon: '🤖',
-            },
-          ].map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2 }}
-              className="bg-card border border-border rounded-xl p-8 hover:border-primary/50 transition-all group"
-            >
-              <div className="text-5xl mb-4">{feature.icon}</div>
-              <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
-                {feature.title}
-              </h3>
-              <p className="text-gray-400 leading-relaxed">{feature.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
       <section className="bg-surface py-32">
         <div className="container mx-auto px-6">
           <motion.div
@@ -205,7 +134,9 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center"
           >
-            <h2 className="text-4xl font-bold mb-6">Временные аномалии</h2>
+            <h2 className="text-4xl font-bold mb-6">
+              <span className="text-secondary">Что если?</span>
+            </h2>
             <p className="text-gray-400 mb-12 max-w-2xl mx-auto">
               Эксклюзивные ивенты, меняющие правила игры
             </p>
