@@ -52,13 +52,14 @@ interface BankSystemProps {
 }
 
 export default function BankSystem({ username, uuid, initialBalance, role, isBanker: isBankerProp, isPresident: isPresidentProp }: BankSystemProps) {
-  const [activeTab, setActiveTab] = useState<'main' | 'transfer' | 'history' | 'rates'>('main');
+  const [activeTab, setActiveTab] = useState<'main' | 'transfer' | 'history' | 'rates' | 'transactions'>('main');
   const [transferTab, setTransferTab] = useState<'nickname' | 'account'>('nickname');
   const [hasAccount, setHasAccount] = useState(false);
   const [account, setAccount] = useState<BankAccount | null>(null);
   const [governmentAccount, setGovernmentAccount] = useState<BankAccount | null>(null);
   const [activeAccountType, setActiveAccountType] = useState<'personal' | 'government'>('personal');
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [allTransactions, setAllTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [transferAmount, setTransferAmount] = useState('');
@@ -78,7 +79,10 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
     fetchOrCreateAccounts();
     fetchTransactions();
     fetchExchangeRates();
-  }, [uuid, role]);
+    if (isBanker) {
+      fetchAllTransactions();
+    }
+  }, [uuid, role, isBanker]);
 
   const fetchOrCreateAccounts = async () => {
     try {
@@ -237,6 +241,18 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
     }
   };
 
+  const fetchAllTransactions = async () => {
+    try {
+      const response = await fetch(`/api/bank/transactions/all?bankerUuid=${uuid}&limit=100`);
+      if (response.ok) {
+        const data = await response.json();
+        setAllTransactions(data.transactions || []);
+      }
+    } catch (error) {
+      console.error('Error fetching all transactions:', error);
+    }
+  };
+
   const getItemData = (itemId: string) => {
     return ITEMS.find(item => item.id === itemId) || ITEMS[0];
   };
@@ -368,6 +384,7 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
             { id: 'transfer', label: 'Переводы', icon: Send },
             { id: 'history', label: 'История', icon: History },
             { id: 'rates', label: 'Курсы', icon: TrendingUp },
+            ...(isBanker ? [{ id: 'transactions', label: 'Транзакции', icon: CreditCard }] : []),
           ].map((tab) => (
             <button
               key={tab.id}
@@ -722,6 +739,57 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {activeTab === 'transactions' && isBanker && (
+        <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+          <h3 className="text-2xl font-bold mb-6">Все транзакции сервера</h3>
+
+          {allTransactions.length === 0 ? (
+            <div className="text-center text-gray-400 py-12">
+              <p>Нет транзакций</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {allTransactions.map((tx, index) => (
+                <div key={index} className="bg-black/50 rounded-lg p-4 border border-gray-800">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      {tx.type === 'deposit' ? (
+                        <ArrowDownLeft className="text-green-500" size={20} />
+                      ) : (
+                        <ArrowUpRight className="text-red-500" size={20} />
+                      )}
+                      <div>
+                        <p className="text-white font-medium">{tx.playerName}</p>
+                        <p className="text-sm text-gray-400">
+                          {tx.type === 'deposit' ? 'Пополнение' : 'Снятие'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className={`text-xl font-bold ${tx.type === 'deposit' ? 'text-green-500' : 'text-red-500'}`}>
+                        {tx.type === 'deposit' ? '+' : '-'}{tx.amount} 💎
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        Баланс: {tx.balanceAfter} 💎
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-sm pt-2 border-t border-gray-800">
+                    <span className="text-gray-400">От: {tx.executorName}</span>
+                    <span className="text-gray-500">{new Date(tx.timestamp).toLocaleString('ru-RU')}</span>
+                  </div>
+                  {tx.description && (
+                    <div className="mt-2 text-sm text-gray-400">
+                      <p>Комментарий: {tx.description}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
