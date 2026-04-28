@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Wallet, Send, History, TrendingUp, CreditCard, ArrowUpRight, ArrowDownLeft, Building2, User } from 'lucide-react';
+import { Wallet, Send, History, TrendingUp, CreditCard, ArrowUpRight, ArrowDownLeft, Building2, User, Plus, Trash2 } from 'lucide-react';
 
 interface BankAccount {
   accountNumber: string;
@@ -21,6 +21,26 @@ interface Transaction {
   timestamp: number;
   description: string;
 }
+
+interface ExchangeRate {
+  id: string;
+  fromItem: string;
+  fromAmount: number;
+  toItem: string;
+  toAmount: number;
+  createdBy: string;
+  createdAt: string;
+}
+
+const ITEMS = [
+  { id: 'Diamond', name: 'Алмаз', image: '/photo/Diamond.png' },
+  { id: 'Emerald', name: 'Изумруд', image: '/photo/Emerald.png' },
+  { id: 'Gold_Ingot', name: 'Золотой слиток', image: '/photo/Gold_Ingot.png' },
+  { id: 'Iron_Ingot', name: 'Железный слиток', image: '/photo/Iron_Ingot.png' },
+  { id: 'Copper_Ingot', name: 'Медный слиток', image: '/photo/Copper_Ingot.png' },
+  { id: 'Netherite_Ingot', name: 'Незеритовый слиток', image: '/photo/Netherite_Ingot.png' },
+  { id: 'Netherite_Scrap', name: 'Незеритовый скрап', image: '/photo/Netherite_Scrap.png' },
+];
 
 interface BankSystemProps {
   username: string;
@@ -42,14 +62,12 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
   const [transferAmount, setTransferAmount] = useState('');
   const [transferRecipient, setTransferRecipient] = useState('');
   const [transferDescription, setTransferDescription] = useState('');
-  const [exchangeRates, setExchangeRates] = useState([
-    { from: 'Алмазы', to: 'Изумруды', rate: 1.5, icon: '💎' },
-    { from: 'Алмазы', to: 'Золото', rate: 9, icon: '💰' },
-    { from: 'Изумруды', to: 'Золото', rate: 6, icon: '🟢' },
-    { from: 'Незерит', to: 'Алмазы', rate: 4, icon: '⬛' },
-  ]);
-  const [editingRate, setEditingRate] = useState<number | null>(null);
-  const [editRateValue, setEditRateValue] = useState('');
+  const [exchangeRates, setExchangeRates] = useState<ExchangeRate[]>([]);
+  const [showCreateRateModal, setShowCreateRateModal] = useState(false);
+  const [fromItem, setFromItem] = useState('Diamond');
+  const [fromAmount, setFromAmount] = useState(1);
+  const [toItem, setToItem] = useState('Emerald');
+  const [toAmount, setToAmount] = useState(1);
 
   const isBanker = role === 'banker';
   const isPresident = role === 'president';
@@ -57,6 +75,7 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
   useEffect(() => {
     fetchOrCreateAccounts();
     fetchTransactions();
+    fetchExchangeRates();
   }, [uuid, role]);
 
   const fetchOrCreateAccounts = async () => {
@@ -161,28 +180,63 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
     }
   };
 
-  const handleEditRate = (index: number) => {
-    setEditingRate(index);
-    setEditRateValue(exchangeRates[index].rate.toString());
-  };
-
-  const handleSaveRate = (index: number) => {
-    const newRate = parseFloat(editRateValue);
-    if (isNaN(newRate) || newRate <= 0) {
-      alert('Введите корректное значение курса');
-      return;
+  const fetchExchangeRates = async () => {
+    try {
+      const response = await fetch('/api/bank/exchange/rates');
+      if (response.ok) {
+        const data = await response.json();
+        setExchangeRates(data);
+      }
+    } catch (error) {
+      console.error('Error fetching exchange rates:', error);
     }
-
-    const newRates = [...exchangeRates];
-    newRates[index].rate = newRate;
-    setExchangeRates(newRates);
-    setEditingRate(null);
-    setEditRateValue('');
   };
 
-  const handleCancelEdit = () => {
-    setEditingRate(null);
-    setEditRateValue('');
+  const handleCreateRate = async () => {
+    try {
+      const response = await fetch('/api/bank/exchange/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bankerUuid: uuid,
+          bankerName: username,
+          fromItem,
+          fromAmount,
+          toItem,
+          toAmount,
+        }),
+      });
+
+      if (response.ok) {
+        setShowCreateRateModal(false);
+        fetchExchangeRates();
+        setFromItem('Diamond');
+        setFromAmount(1);
+        setToItem('Emerald');
+        setToAmount(1);
+      }
+    } catch (error) {
+      console.error('Error creating rate:', error);
+    }
+  };
+
+  const handleDeleteRate = async (rateId: string) => {
+    try {
+      const response = await fetch(
+        `/api/bank/exchange/delete?bankerUuid=${uuid}&rateId=${rateId}`,
+        { method: 'DELETE' }
+      );
+
+      if (response.ok) {
+        fetchExchangeRates();
+      }
+    } catch (error) {
+      console.error('Error deleting rate:', error);
+    }
+  };
+
+  const getItemData = (itemId: string) => {
+    return ITEMS.find(item => item.id === itemId) || ITEMS[0];
   };
 
   const handleTransfer = async () => {
@@ -513,72 +567,158 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
       {/* Курсы обмена */}
       {activeTab === 'rates' && (
         <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-          <h3 className="text-2xl font-bold mb-6">Курсы обмена</h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold">Курсы обмена</h3>
+            {isBanker && (
+              <button
+                onClick={() => setShowCreateRateModal(true)}
+                className="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors"
+              >
+                <Plus size={20} />
+                Добавить курс
+              </button>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {exchangeRates.map((rate, index) => (
-              <div key={index} className="bg-black/50 rounded-lg p-6 border border-gray-800 hover:border-yellow-500/30 transition-colors">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-3xl">{rate.icon}</div>
-                  <div className="text-right">
-                    {editingRate === index && isBanker ? (
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          step="0.1"
-                          value={editRateValue}
-                          onChange={(e) => setEditRateValue(e.target.value)}
-                          className="w-20 px-2 py-1 bg-gray-800 border border-gray-700 rounded text-yellow-500 text-xl font-bold text-right"
-                          autoFocus
-                        />
-                        <span className="text-yellow-500 text-xl font-bold">x</span>
+            {exchangeRates.map((rate) => {
+              const fromData = getItemData(rate.fromItem);
+              const toData = getItemData(rate.toItem);
+
+              return (
+                <div key={rate.id} className="bg-black/50 rounded-lg p-6 border border-gray-800 hover:border-yellow-500/30 transition-colors">
+                  <div className="flex items-center justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-3 flex-1">
+                      <img src={fromData.image} alt={fromData.name} className="w-12 h-12" />
+                      <div>
+                        <p className="text-gray-400 text-sm">{fromData.name}</p>
+                        <p className="text-2xl text-yellow-500 font-bold">{rate.fromAmount}</p>
                       </div>
-                    ) : (
-                      <p className="text-2xl font-bold text-yellow-500">{rate.rate}x</p>
-                    )}
+                    </div>
+
+                    <div className="text-gray-600 text-2xl">→</div>
+
+                    <div className="flex items-center gap-3 flex-1">
+                      <img src={toData.image} alt={toData.name} className="w-12 h-12" />
+                      <div>
+                        <p className="text-gray-400 text-sm">{toData.name}</p>
+                        <p className="text-2xl text-yellow-500 font-bold">{rate.toAmount}</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center justify-between text-sm mb-4">
-                  <span className="text-gray-400">{rate.from}</span>
-                  <span className="text-gray-600">→</span>
-                  <span className="text-gray-300">{rate.to}</span>
-                </div>
-                {isBanker && (
-                  <div className="flex gap-2">
-                    {editingRate === index ? (
-                      <>
-                        <button
-                          onClick={() => handleSaveRate(index)}
-                          className="flex-1 px-3 py-2 bg-green-500 hover:bg-green-600 text-white text-sm rounded transition-colors"
-                        >
-                          Сохранить
-                        </button>
-                        <button
-                          onClick={handleCancelEdit}
-                          className="flex-1 px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded transition-colors"
-                        >
-                          Отмена
-                        </button>
-                      </>
-                    ) : (
+
+                  <div className="pt-4 border-t border-gray-800 flex items-center justify-between">
+                    <div className="text-sm text-gray-400">
+                      <p>Создал: {rate.createdBy}</p>
+                      <p>{new Date(rate.createdAt).toLocaleDateString('ru-RU')}</p>
+                    </div>
+
+                    {isBanker && (
                       <button
-                        onClick={() => handleEditRate(index)}
-                        className="w-full px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-black text-sm rounded transition-colors font-semibold"
+                        onClick={() => handleDeleteRate(rate.id)}
+                        className="text-red-500 hover:text-red-400 transition-colors p-2"
                       >
-                        Изменить курс
+                        <Trash2 size={20} />
                       </button>
                     )}
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
+
+          {exchangeRates.length === 0 && (
+            <div className="text-center text-gray-400 py-12">
+              <p>Пока нет обменных курсов</p>
+            </div>
+          )}
+
           <div className="mt-6 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
             <p className="text-sm text-gray-400">
               {isBanker
-                ? 'Вы можете изменять курсы обмена. Изменения применяются сразу для всех игроков.'
+                ? 'Вы можете добавлять и удалять курсы обмена. Изменения применяются сразу для всех игроков.'
                 : 'Курсы обновляются банкирами сервера. Обмен валюты доступен в банке на спавне.'
               }
             </p>
+          </div>
+        </div>
+      )}
+
+      {showCreateRateModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-xl p-8 max-w-2xl w-full border border-gray-800">
+            <h2 className="text-3xl font-bold mb-6 text-yellow-500">Новый курс обмена</h2>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Отдаёте
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <select
+                    value={fromItem}
+                    onChange={(e) => setFromItem(e.target.value)}
+                    className="bg-black border border-gray-700 rounded-lg px-4 py-3 text-white"
+                  >
+                    {ITEMS.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    min="1"
+                    value={fromAmount}
+                    onChange={(e) => setFromAmount(parseInt(e.target.value) || 1)}
+                    className="bg-black border border-gray-700 rounded-lg px-4 py-3 text-white"
+                    placeholder="Количество"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Получаете
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <select
+                    value={toItem}
+                    onChange={(e) => setToItem(e.target.value)}
+                    className="bg-black border border-gray-700 rounded-lg px-4 py-3 text-white"
+                  >
+                    {ITEMS.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    min="1"
+                    value={toAmount}
+                    onChange={(e) => setToAmount(parseInt(e.target.value) || 1)}
+                    className="bg-black border border-gray-700 rounded-lg px-4 py-3 text-white"
+                    placeholder="Количество"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  onClick={handleCreateRate}
+                  className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-3 rounded-lg font-semibold transition-colors"
+                >
+                  Создать
+                </button>
+                <button
+                  onClick={() => setShowCreateRateModal(false)}
+                  className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                >
+                  Отмена
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
