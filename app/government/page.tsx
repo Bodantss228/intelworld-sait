@@ -475,7 +475,7 @@ export default function GovernmentPage() {
                                 <button
                                   onClick={() => isActive && !hasVoted && handleVote(voting.id, option.id)}
                                   disabled={!isActive || hasVoted}
-                                  className={`w-full text-left px-6 py-4 rounded-lg border transition-all ${
+                                  className={`w-full text-left px-6 py-4 rounded-lg border transition-all relative overflow-hidden ${
                                     isSelected
                                       ? 'border-primary bg-primary/10'
                                       : hasVoted || !isActive
@@ -483,6 +483,12 @@ export default function GovernmentPage() {
                                       : 'border-border bg-surface hover:border-primary hover:bg-primary/5 cursor-pointer'
                                   }`}
                                 >
+                                  {showResults && (
+                                    <div
+                                      className="absolute inset-0 bg-primary/20 rounded-lg transition-all"
+                                      style={{ width: `${percentage}%` }}
+                                    />
+                                  )}
                                   <div className="flex items-center justify-between relative z-10">
                                     <span className="font-semibold text-white">{option.text}</span>
                                     {showResults && (
@@ -491,12 +497,6 @@ export default function GovernmentPage() {
                                       </span>
                                     )}
                                   </div>
-                                  {showResults && (
-                                    <div
-                                      className="absolute inset-0 bg-primary/20 rounded-lg transition-all"
-                                      style={{ width: `${percentage}%` }}
-                                    />
-                                  )}
                                 </button>
                                 {!voting.anonymous && showResults && votersForOption.length > 0 && (
                                   <div className="mt-2 ml-6 text-xs text-gray-500">

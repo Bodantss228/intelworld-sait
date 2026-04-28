@@ -11,7 +11,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'UUID is required' }, { status: 400 });
     }
 
-    const response = await fetch(`${MINECRAFT_SERVER_URL}/api/bank/account/government?uuid=${uuid}`);
+    const response = await fetch(`${MINECRAFT_SERVER_URL}/api/bank/account/government?uuid=${uuid}`, {
+      cache: 'no-store',
+    });
 
     if (!response.ok) {
       return NextResponse.json({ error: 'Government account not found' }, { status: response.status });
