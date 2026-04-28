@@ -677,7 +677,7 @@ export default function ProfilePage() {
                         ) : (
                           <div className="space-y-4">
                             {votings
-                              .filter((voting) => voting.active && new Date(voting.endsAt) > new Date())
+                              .filter((voting) => voting.active)
                               .map((voting) => {
                               const totalVotes = voting.options.reduce((sum, opt) => sum + opt.votes, 0);
                               const hasVoted = profile && voting.votes[profile.uuid];

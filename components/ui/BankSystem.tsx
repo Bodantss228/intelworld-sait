@@ -45,6 +45,7 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
 
   useEffect(() => {
     fetchOrCreateAccounts();
+    fetchTransactions();
   }, [uuid, role]);
 
   const fetchOrCreateAccounts = async () => {
@@ -102,6 +103,30 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
       console.error('Error fetching/creating accounts:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      const response = await fetch(`/api/user/transactions?limit=50`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.transactions && Array.isArray(data.transactions)) {
+          // Преобразуем транзакции в нужный формат
+          const formattedTransactions = data.transactions.map((tx: any) => ({
+            id: `${tx.timestamp}-${tx.type}`,
+            type: tx.type === 'deposit' ? 'incoming' : 'outgoing',
+            amount: tx.amount,
+            from: tx.executorName,
+            to: tx.playerName,
+            timestamp: new Date(tx.timestamp).getTime(),
+            description: tx.type === 'deposit' ? 'Пополнение' : 'Снятие',
+          }));
+          setTransactions(formattedTransactions);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
     }
   };
 
@@ -163,6 +188,7 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
 
       // Обновляем баланс
       await fetchOrCreateAccounts();
+      await fetchTransactions();
     } catch (error) {
       console.error('Transfer error:', error);
       alert('Ошибка при выполнении перевода');

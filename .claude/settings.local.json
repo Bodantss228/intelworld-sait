@@ -49,7 +49,15 @@
       "Bash(dir \"C:\\\\Users\\\\grinb\\\\mod bank\\\\intelworld-bank\")",
       "Bash(dir \"C:\\\\Users\\\\grinb\\\\mod bank\\\\intelworld-government\")",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m 'Fix: transfers, government account, players tab, votings, fines payment *)",
+      "Bash(npm list *)",
+      "Bash(vercel --prod --yes)",
+      "Bash(vercel ls *)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'Fix: votings display filter, transaction history in BankSystem *)"
     ]
   }
 }
