@@ -5,27 +5,28 @@ const MINECRAFT_SERVER_URL = process.env.MINECRAFT_SERVER_URL || 'http://white.f
 
 export async function GET() {
   try {
-    // Получаем список всех аккаунтов (игроков) из мода
-    // Используем фиктивный UUID для получения списка всех аккаунтов
-    const response = await fetch(`${MINECRAFT_SERVER_URL}/api/bank/accounts/all?bankerUuid=00000000-0000-0000-0000-000000000000`, {
+    // Получаем список всех игроков из мода через government API
+    const response = await fetch(`${MINECRAFT_SERVER_URL}/api/government/players`, {
       cache: 'no-store',
     });
 
     if (!response.ok) {
+      console.error('Failed to fetch players:', response.status, response.statusText);
       return NextResponse.json({
         players: [],
         count: 0
       });
     }
 
-    const accounts = await response.json();
+    const data = await response.json();
 
-    // Преобразуем аккаунты в формат игроков
-    const players = Array.isArray(accounts) ? accounts.map((account: any) => ({
-      uuid: account.ownerUuid,
-      username: account.ownerName,
-      accountNumber: account.accountNumber,
-      createdAt: account.createdAt
+    // Преобразуем данные в нужный формат
+    const players = Array.isArray(data) ? data.map((player: any) => ({
+      uuid: player.uuid,
+      name: player.name,
+      addedBy: player.addedBy,
+      description: player.description,
+      addedAt: player.addedAt
     })) : [];
 
     return NextResponse.json({

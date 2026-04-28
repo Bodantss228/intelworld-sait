@@ -73,7 +73,7 @@ export default function DownloadsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold mb-4 text-gray-400">На минимальных</h3>
+                <h3 className="text-lg font-semibold mb-4 text-gray-400">Минимальные</h3>
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-start gap-2">
                     <CheckCircle size={20} className="text-success mt-0.5 flex-shrink-0" />
@@ -86,7 +86,7 @@ export default function DownloadsPage() {
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-4 text-primary">На рекомендуемых</h3>
+                <h3 className="text-lg font-semibold mb-4 text-primary">Рекомендуемые</h3>
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-start gap-2">
                     <CheckCircle size={20} className="text-primary mt-0.5 flex-shrink-0" />

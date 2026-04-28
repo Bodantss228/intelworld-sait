@@ -306,11 +306,11 @@ export default function GovernmentPage() {
                     </div>
 
                     {post.imageUrl && (
-                      <div className="mb-4 rounded-lg overflow-hidden">
+                      <div className="mb-4 rounded-lg overflow-hidden border border-border max-w-4xl">
                         <img
-                          src={post.imageUrl}
+                          src={`/api/proxy-image?url=${encodeURIComponent(post.imageUrl)}`}
                           alt={post.title}
-                          className="w-full h-auto max-h-96 object-cover"
+                          className="w-full h-auto max-h-96 object-contain bg-black"
                           onError={(e) => {
                             console.error('Failed to load image:', post.imageUrl);
                             e.currentTarget.style.display = 'none';
@@ -320,11 +320,11 @@ export default function GovernmentPage() {
                     )}
 
                     {post.videoUrl && (
-                      <div className="mb-4 rounded-lg overflow-hidden">
+                      <div className="mb-4 rounded-lg overflow-hidden border border-border max-w-2xl">
                         <video
                           src={post.videoUrl}
                           controls
-                          className="w-full h-auto max-h-96"
+                          className="w-full h-auto max-h-96 bg-black"
                         />
                       </div>
                     )}
@@ -427,11 +427,11 @@ export default function GovernmentPage() {
                       </div>
 
                       {voting.imageUrl && (
-                        <div className="mb-6 rounded-lg overflow-hidden">
+                        <div className="mb-6 rounded-lg overflow-hidden border border-border max-w-3xl">
                           <img
-                            src={voting.imageUrl}
+                            src={`/api/proxy-image?url=${encodeURIComponent(voting.imageUrl)}`}
                             alt={voting.title}
-                            className="w-full h-auto max-h-64 object-cover"
+                            className="w-full h-auto max-h-80 object-contain bg-black"
                             onError={(e) => {
                               console.error('Failed to load image:', voting.imageUrl);
                               e.currentTarget.style.display = 'none';

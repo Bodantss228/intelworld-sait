@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Vote, Image as ImageIcon, Plus, Minus, Send, Loader2, Eye, EyeOff } from 'lucide-react';
+import CloudinaryUploadWidget from '@/components/ui/CloudinaryUploadWidget';
 
 export default function CreateVotingPage() {
   const router = useRouter();
@@ -185,15 +186,30 @@ export default function CreateVotingPage() {
             <div>
               <label className="block text-sm font-semibold text-gray-400 mb-2">
                 <ImageIcon className="inline mr-2" size={16} />
-                Ссылка на изображение (опционально)
+                Изображение (опционально)
               </label>
-              <input
-                type="url"
-                value={formData.imageUrl}
-                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                className="w-full bg-surface border border-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
-                placeholder="https://example.com/image.jpg"
-              />
+              <div className="space-y-2">
+                <input
+                  type="url"
+                  value={formData.imageUrl}
+                  onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                  className="w-full bg-surface border border-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
+                  placeholder="Или вставьте ссылку на изображение"
+                />
+                <CloudinaryUploadWidget
+                  onUpload={(url) => setFormData({ ...formData, imageUrl: url })}
+                  buttonText="Загрузить изображение с ПК"
+                  resourceType="image"
+                  buttonClass="block w-full bg-primary/10 border border-primary/30 rounded-lg px-4 py-3 text-center text-primary hover:bg-primary/20 transition-colors cursor-pointer"
+                />
+                {formData.imageUrl && (
+                  <img
+                    src={formData.imageUrl}
+                    alt="Preview"
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                )}
+              </div>
             </div>
           </div>
 

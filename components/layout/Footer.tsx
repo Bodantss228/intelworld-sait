@@ -22,7 +22,7 @@ export default function Footer() {
               href="https://t.me/+qlRaO6spWoBlY2Fi"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-primary hover:bg-primary/90 text-black font-medium px-6 py-3 rounded-lg transition-colors"
+              className="inline-block text-gray-400 hover:text-primary border border-border hover:border-primary px-4 py-2 rounded-lg transition-colors text-sm"
             >
               Присоединиться к каналу
             </a>

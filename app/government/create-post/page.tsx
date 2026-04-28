@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FileText, Image as ImageIcon, Video, Send, Loader2 } from 'lucide-react';
+import CloudinaryUploadWidget from '@/components/ui/CloudinaryUploadWidget';
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -156,29 +157,59 @@ export default function CreatePostPage() {
             <div>
               <label className="block text-sm font-semibold text-gray-400 mb-2">
                 <ImageIcon className="inline mr-2" size={16} />
-                Ссылка на изображение (опционально)
+                Изображение
               </label>
-              <input
-                type="url"
-                value={formData.imageUrl}
-                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                className="w-full bg-surface border border-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
-                placeholder="https://example.com/image.jpg"
-              />
+              <div className="space-y-2">
+                <input
+                  type="url"
+                  value={formData.imageUrl}
+                  onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                  className="w-full bg-surface border border-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
+                  placeholder="Или вставьте ссылку на изображение"
+                />
+                <CloudinaryUploadWidget
+                  onUpload={(url) => setFormData({ ...formData, imageUrl: url })}
+                  buttonText="Загрузить изображение с ПК"
+                  resourceType="image"
+                  buttonClass="block w-full bg-primary/10 border border-primary/30 rounded-lg px-4 py-3 text-center text-primary hover:bg-primary/20 transition-colors cursor-pointer"
+                />
+                {formData.imageUrl && (
+                  <img
+                    src={formData.imageUrl}
+                    alt="Preview"
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                )}
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-400 mb-2">
                 <Video className="inline mr-2" size={16} />
-                Ссылка на видео (опционально)
+                Видео
               </label>
-              <input
-                type="url"
-                value={formData.videoUrl}
-                onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
-                className="w-full bg-surface border border-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
-                placeholder="https://example.com/video.mp4"
-              />
+              <div className="space-y-2">
+                <input
+                  type="url"
+                  value={formData.videoUrl}
+                  onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
+                  className="w-full bg-surface border border-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
+                  placeholder="Или вставьте ссылку на видео"
+                />
+                <CloudinaryUploadWidget
+                  onUpload={(url) => setFormData({ ...formData, videoUrl: url })}
+                  buttonText="Загрузить видео с ПК"
+                  resourceType="video"
+                  buttonClass="block w-full bg-secondary/10 border border-secondary/30 rounded-lg px-4 py-3 text-center text-secondary hover:bg-secondary/20 transition-colors cursor-pointer"
+                />
+                {formData.videoUrl && (
+                  <video
+                    src={formData.videoUrl}
+                    className="w-full h-32 object-cover rounded-lg"
+                    controls
+                  />
+                )}
+              </div>
             </div>
           </div>
 
