@@ -63,7 +63,8 @@
       "Bash(tail -n +809 \"C:\\\\Users\\\\grinb\\\\Downloads\\\\сайт intel\\\\app\\\\profile\\\\page.tsx\")",
       "Bash(mv /tmp/profile_temp.tsx \"C:\\\\Users\\\\grinb\\\\Downloads\\\\сайт intel\\\\app\\\\profile\\\\page.tsx\")",
       "Bash(git commit -m 'Major fixes: separate account balances, fine payment, players, government redirect *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(grep -i \"\\\\.png$\")"
     ]
   }
 }
