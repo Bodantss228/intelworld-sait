@@ -12,7 +12,7 @@ export default function Footer() {
               Юбилейный 5-й сезон. Тема "What If..." - исследование альтернативных реальностей вселенной IntelWorld.
             </p>
             <p className="text-sm text-gray-500">
-              Ванилла+ сервер на Fabric 1.21.x
+              Почти ванилла 1.21.8
             </p>
           </div>
 
@@ -39,27 +39,50 @@ export default function Footer() {
 
           <div>
             <h4 className="text-lg font-semibold mb-4 text-primary">Свяжитесь с нами</h4>
-            <p className="text-sm text-gray-400 mb-4">
-              <a href="mailto:help@intelworld.ru" className="hover:text-primary transition-colors">
-                help@intelworld.ru
+            <div className="flex flex-col gap-3 mb-4">
+              <a href="https://t.me/bodantss" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors text-sm">
+                @bodantss
               </a>
-            </p>
-            <div className="flex flex-col gap-2">
-              <p className="text-xs text-gray-500">Способы оплаты:</p>
-              <div className="flex gap-3 text-sm text-gray-400">
-                <span>Т-Банк</span>
-                <span>•</span>
-                <span>Сбербанк</span>
-                <span>•</span>
-                <span>Альфа-Банк</span>
-              </div>
+              <a href="https://t.me/photonxxl" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors text-sm">
+                @photonxxl
+              </a>
+            </div>
+            <div className="grid grid-cols-2 items-center gap-4 pt-4 lg:grid-cols-4">
+              <img
+                width="74"
+                height="24"
+                className="mx-auto h-10 w-auto rounded-xl bg-white p-2"
+                src="/img/payment/tinkoff.svg"
+                alt="Т-Банк"
+              />
+              <img
+                width="90"
+                height="56"
+                className="mx-auto h-14 w-auto"
+                src="/img/payment/visa.svg"
+                alt="VISA"
+              />
+              <img
+                width="53"
+                height="16"
+                className="mx-auto h-8 w-auto rounded-xl bg-white p-2"
+                src="/img/payment/mir.svg"
+                alt="Мир"
+              />
+              <img
+                width="56"
+                height="40"
+                className="mx-auto h-10 w-auto pl-3"
+                src="/img/payment/mastercard.svg"
+                alt="Mastercard"
+              />
             </div>
           </div>
         </div>
 
         <div className="border-t border-border mt-8 pt-6">
           <p className="text-gray-500 text-sm mb-2">
-            &copy; 2026 IntelWorld. Все права защищены.
+            &copy; 2026 IntelWorld. Все права у админов.
           </p>
           <p className="text-gray-600 text-xs">
             ИП СИДОРОВ БОГДАН САНЫЧ (ИНН 694267522849 ОГРНИП 123456789098765)
