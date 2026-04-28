@@ -36,7 +36,7 @@ export default function StatsPage() {
             <span className="gradient-text">Статистика</span>
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Лидеры сервера и достижения игроков
+            Информация о сервере в реальном времени
           </p>
         </div>
 

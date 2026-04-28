@@ -10,23 +10,23 @@ export default function DownloadsPage() {
 
   const launchers = [
     {
-      id: 'curseforge',
-      name: 'CurseForge (Рекомендуется)',
+      id: 'tlauncher',
+      name: 'TLauncher (Рекомендуется)',
       steps: [
-        'Скачайте и установите CurseForge лаунчер',
-        'Нажмите "Создать профиль"',
-        'Найдите "IntelWorld Modpack" в поиске',
-        'Нажмите "Установить" и дождитесь загрузки',
-        'Запустите модпак и подключитесь к серверу',
+        'Скачайте и установите TLauncher',
+        'Скачайте ZIP-архив модпака выше',
+        'Распакуйте папку в .minecraft/versions',
+        'В TLauncher выберите версию 1.21.8',
+        'Запустите игру и подключитесь к play.intelworld.ru',
       ],
     },
     {
       id: 'manual',
       name: 'Ручная установка',
       steps: [
-        'Скачайте ZIP-архив модпака ниже',
-        'Распакуйте в папку .minecraft',
-        'Установите Fabric Loader 1.21.x',
+        'Скачайте ZIP-архив модпака выше',
+        'Распакуйте в папку .minecraft/versions',
+        'Установите Fabric Loader 1.21.8',
         'Запустите Minecraft с профилем Fabric',
         'Добавьте сервер: play.intelworld.ru',
       ],
@@ -48,24 +48,14 @@ export default function DownloadsPage() {
         <div className="max-w-4xl mx-auto">
           <div className="bg-card border border-primary/30 rounded-2xl p-8 mb-12 text-center glow-purple">
             <div className="mb-6">
-              <h2 className="text-3xl font-bold mb-2">IntelWorld Modpack</h2>
-              <p className="text-gray-400">Сезон 5: "What If..." • Minecraft 1.21.4 • Fabric</p>
+              <h2 className="text-3xl font-bold mb-2">IntellWorld Modpack</h2>
+              <p className="text-gray-400">Сезон 5: "What If..." • Minecraft 1.21.8 • Fabric</p>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-8">
+            <div className="flex items-center justify-center gap-6 mb-8">
               <div className="text-left">
-                <p className="text-sm text-gray-500">Размер файла</p>
-                <p className="text-lg font-semibold">187 МБ</p>
-              </div>
-              <div className="hidden md:block w-px h-12 bg-border" />
-              <div className="text-left">
-                <p className="text-sm text-gray-500">Загрузок</p>
-                <p className="text-lg font-semibold">8,421</p>
-              </div>
-              <div className="hidden md:block w-px h-12 bg-border" />
-              <div className="text-left">
-                <p className="text-sm text-gray-500">Обновлено</p>
-                <p className="text-lg font-semibold">15 апр 2026</p>
+                <p className="text-sm text-gray-500">Дата обновления</p>
+                <p className="text-lg font-semibold">Админы еще трудятся</p>
               </div>
             </div>
 
@@ -73,10 +63,6 @@ export default function DownloadsPage() {
               <Download size={24} />
               Скачать модпак
             </MagneticButton>
-
-            <p className="text-xs text-gray-500 mt-4">
-              Версия 5.0.2 • Включает все необходимые моды
-            </p>
           </div>
 
           <div className="bg-card border border-border rounded-2xl p-8 mb-12">
@@ -87,44 +73,28 @@ export default function DownloadsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold mb-4 text-gray-400">Минимальные</h3>
+                <h3 className="text-lg font-semibold mb-4 text-gray-400">На минимальных</h3>
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-start gap-2">
                     <CheckCircle size={20} className="text-success mt-0.5 flex-shrink-0" />
-                    <span>Java 21 или выше</span>
+                    <span>Компьютер</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle size={20} className="text-success mt-0.5 flex-shrink-0" />
-                    <span>4 ГБ оперативной памяти</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={20} className="text-success mt-0.5 flex-shrink-0" />
-                    <span>2 ГБ свободного места</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={20} className="text-success mt-0.5 flex-shrink-0" />
-                    <span>Minecraft 1.21.4</span>
+                    <span>Мамина карточка</span>
                   </li>
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-4 text-primary">Рекомендуемые</h3>
+                <h3 className="text-lg font-semibold mb-4 text-primary">На рекомендуемых</h3>
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-start gap-2">
                     <CheckCircle size={20} className="text-primary mt-0.5 flex-shrink-0" />
-                    <span>Java 21 (последняя версия)</span>
+                    <span>Квантовый адронный коллайдер</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle size={20} className="text-primary mt-0.5 flex-shrink-0" />
-                    <span>8 ГБ оперативной памяти</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={20} className="text-primary mt-0.5 flex-shrink-0" />
-                    <span>5 ГБ свободного места</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle size={20} className="text-primary mt-0.5 flex-shrink-0" />
-                    <span>Дискретная видеокарта</span>
+                    <span>Папина кредитка</span>
                   </li>
                 </ul>
               </div>
@@ -183,22 +153,26 @@ export default function DownloadsPage() {
           <div className="bg-gradient-to-r from-secondary/20 to-primary/20 border border-secondary/30 rounded-2xl p-10 text-center">
             <h3 className="text-2xl font-bold mb-4">Нужна помощь?</h3>
             <p className="text-gray-300 mb-6">
-              Если возникли проблемы с установкой, обратитесь в наш Discord или Telegram
+              Справляйтесь сами или напишите нам
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="#"
-                className="bg-secondary text-white px-8 py-3 rounded-lg font-semibold hover:bg-secondary/90 transition-all inline-flex items-center justify-center gap-2"
-              >
-                <ExternalLink size={20} />
-                Discord сервер
-              </a>
-              <a
-                href="#"
+                href="https://t.me/bodantss"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-primary text-black px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-all inline-flex items-center justify-center gap-2"
               >
                 <ExternalLink size={20} />
-                Telegram канал
+                @bodantss
+              </a>
+              <a
+                href="https://t.me/photonxxl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-secondary text-white px-8 py-3 rounded-lg font-semibold hover:bg-secondary/90 transition-all inline-flex items-center justify-center gap-2"
+              >
+                <ExternalLink size={20} />
+                @photonxxl
               </a>
             </div>
           </div>

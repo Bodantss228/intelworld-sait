@@ -17,24 +17,15 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-primary">Документы</h4>
-            <ul className="space-y-2">
-              <li>
-                <a href="/docs/offer" className="text-gray-400 hover:text-primary transition-colors text-sm">
-                  Договор-оферта
-                </a>
-              </li>
-              <li>
-                <a href="/docs/privacy" className="text-gray-400 hover:text-primary transition-colors text-sm">
-                  Политика конфиденциальности
-                </a>
-              </li>
-              <li>
-                <a href="/docs/payment" className="text-gray-400 hover:text-primary transition-colors text-sm">
-                  Порядок оплаты
-                </a>
-              </li>
-            </ul>
+            <h4 className="text-lg font-semibold mb-4 text-primary">Телеграм каналы</h4>
+            <a
+              href="https://t.me/+qlRaO6spWoBlY2Fi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-primary hover:bg-primary/90 text-black font-medium px-6 py-3 rounded-lg transition-colors"
+            >
+              Присоединиться к каналу
+            </a>
           </div>
 
           <div>
@@ -48,34 +39,42 @@ export default function Footer() {
               </a>
             </div>
             <div className="grid grid-cols-2 items-center gap-4 pt-4 lg:grid-cols-4">
-              <img
-                width="74"
-                height="24"
-                className="mx-auto h-10 w-auto rounded-xl bg-white p-2"
-                src="/img/payment/tinkoff.svg"
-                alt="Т-Банк"
-              />
-              <img
-                width="90"
-                height="56"
-                className="mx-auto h-14 w-auto"
-                src="/img/payment/visa.svg"
-                alt="VISA"
-              />
-              <img
-                width="53"
-                height="16"
-                className="mx-auto h-8 w-auto rounded-xl bg-white p-2"
-                src="/img/payment/mir.svg"
-                alt="Мир"
-              />
-              <img
-                width="56"
-                height="40"
-                className="mx-auto h-10 w-auto pl-3"
-                src="/img/payment/mastercard.svg"
-                alt="Mastercard"
-              />
+              <a href="https://www.tinkoff.ru/rm/r_xOjSxJqqyY.etEoRxJAiF/bmrNY25088" target="_blank" rel="noopener noreferrer">
+                <img
+                  width="74"
+                  height="24"
+                  className="mx-auto h-10 w-auto rounded-xl bg-white p-2 hover:opacity-80 transition-opacity"
+                  src="/img/payment/tinkoff.svg"
+                  alt="Т-Банк"
+                />
+              </a>
+              <a href="https://www.tinkoff.ru/rm/r_xOjSxJqqyY.etEoRxJAiF/bmrNY25088" target="_blank" rel="noopener noreferrer">
+                <img
+                  width="90"
+                  height="56"
+                  className="mx-auto h-14 w-auto hover:opacity-80 transition-opacity"
+                  src="/img/payment/visa.svg"
+                  alt="VISA"
+                />
+              </a>
+              <a href="https://www.tinkoff.ru/rm/r_xOjSxJqqyY.etEoRxJAiF/bmrNY25088" target="_blank" rel="noopener noreferrer">
+                <img
+                  width="53"
+                  height="16"
+                  className="mx-auto h-8 w-auto rounded-xl bg-white p-2 hover:opacity-80 transition-opacity"
+                  src="/img/payment/mir.svg"
+                  alt="Мир"
+                />
+              </a>
+              <a href="https://www.tinkoff.ru/rm/r_xOjSxJqqyY.etEoRxJAiF/bmrNY25088" target="_blank" rel="noopener noreferrer">
+                <img
+                  width="56"
+                  height="40"
+                  className="mx-auto h-10 w-auto pl-3 hover:opacity-80 transition-opacity"
+                  src="/img/payment/mastercard.svg"
+                  alt="Mastercard"
+                />
+              </a>
             </div>
           </div>
         </div>
