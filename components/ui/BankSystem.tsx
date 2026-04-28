@@ -47,9 +47,11 @@ interface BankSystemProps {
   uuid: string;
   initialBalance: number;
   role?: string;
+  isBanker?: boolean;
+  isPresident?: boolean;
 }
 
-export default function BankSystem({ username, uuid, initialBalance, role }: BankSystemProps) {
+export default function BankSystem({ username, uuid, initialBalance, role, isBanker: isBankerProp, isPresident: isPresidentProp }: BankSystemProps) {
   const [activeTab, setActiveTab] = useState<'main' | 'transfer' | 'history' | 'rates'>('main');
   const [transferTab, setTransferTab] = useState<'nickname' | 'account'>('nickname');
   const [hasAccount, setHasAccount] = useState(false);
@@ -69,8 +71,8 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
   const [toItem, setToItem] = useState('Emerald');
   const [toAmount, setToAmount] = useState(1);
 
-  const isBanker = role === 'banker';
-  const isPresident = role === 'president';
+  const isBanker = isBankerProp || role === 'banker';
+  const isPresident = isPresidentProp || role === 'president';
 
   useEffect(() => {
     fetchOrCreateAccounts();

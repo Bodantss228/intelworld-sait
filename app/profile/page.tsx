@@ -15,6 +15,10 @@ interface UserProfile {
   createdAt: number;
   lastLogin: number;
   role?: string;
+  roles?: string[];
+  isBanker?: boolean;
+  isPresident?: boolean;
+  isMedia?: boolean;
 }
 
 interface Transaction {
@@ -474,6 +478,8 @@ export default function ProfilePage() {
                 uuid={profile.uuid}
                 initialBalance={profile.balance}
                 role={profile.role}
+                isBanker={profile.isBanker}
+                isPresident={profile.isPresident}
               />
             )}
 

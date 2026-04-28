@@ -30,6 +30,22 @@ export async function GET() {
       if (roleResponse.ok) {
         const roleData = await roleResponse.json();
         role = roleData.role || '';
+
+        // Добавляем массив всех ролей
+        const roles = roleData.roles || [];
+
+        return NextResponse.json({
+          uuid: session.uuid,
+          username: session.username,
+          balance,
+          role,
+          roles, // Массив всех ролей
+          isBanker: roles.includes('banker') || role === 'banker',
+          isPresident: roles.includes('president') || role === 'president',
+          isMedia: roles.includes('media') || role === 'media',
+          createdAt: Date.now(),
+          lastLogin: Date.now(),
+        });
       }
     } catch (error) {
       console.error('Error fetching data from Minecraft server:', error);
@@ -40,6 +56,10 @@ export async function GET() {
       username: session.username,
       balance,
       role,
+      roles: [],
+      isBanker: false,
+      isPresident: false,
+      isMedia: false,
       createdAt: Date.now(),
       lastLogin: Date.now(),
     });
