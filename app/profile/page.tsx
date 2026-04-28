@@ -189,7 +189,15 @@ export default function ProfilePage() {
       const response = await fetch('/api/players');
       if (response.ok) {
         const data = await response.json();
-        setPlayers(data.players || []);
+        const sortedPlayers = (data.players || []).sort((a: any, b: any) => {
+          // Извлекаем номер счета из description (формат: "Счет: 0001")
+          const getAccountNumber = (desc: string) => {
+            const match = desc?.match(/Счет:\s*(\d+)/);
+            return match ? parseInt(match[1], 10) : 999999;
+          };
+          return getAccountNumber(a.description) - getAccountNumber(b.description);
+        });
+        setPlayers(sortedPlayers);
       }
     } catch (error) {
       console.error('Error fetching players:', error);

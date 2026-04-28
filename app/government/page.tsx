@@ -278,76 +278,78 @@ export default function GovernmentPage() {
                 <p className="text-xl text-gray-400">Новостей пока нет</p>
               </motion.div>
             ) : (
-              <div className="space-y-6">
-                {posts.map((post, index) => (
-                  <motion.article
-                    key={post.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-card border border-border rounded-2xl p-8 hover:border-primary/50 transition-all"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h2 className="text-3xl font-bold mb-2 text-white hover:text-primary transition-colors">
-                          {post.title}
-                        </h2>
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
-                          <span className="flex items-center gap-1">
-                            <User size={14} />
-                            {post.author}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Calendar size={14} />
-                            {new Date(post.createdAt).toLocaleDateString('ru-RU')}
-                          </span>
+              <div className="flex justify-center">
+                <div className="space-y-6 w-full max-w-3xl">
+                  {posts.map((post, index) => (
+                    <motion.article
+                      key={post.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-card border border-border rounded-2xl p-8 hover:border-primary/50 transition-all"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h2 className="text-3xl font-bold mb-2 text-white hover:text-primary transition-colors">
+                            {post.title}
+                          </h2>
+                          <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <span className="flex items-center gap-1">
+                              <User size={14} />
+                              {post.author}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Calendar size={14} />
+                              {new Date(post.createdAt).toLocaleDateString('ru-RU')}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {post.imageUrl && (
-                      <div className="mb-4 rounded-lg overflow-hidden border border-border max-w-4xl">
-                        <img
-                          src={`/api/proxy-image?url=${encodeURIComponent(post.imageUrl)}`}
-                          alt={post.title}
-                          className="w-full h-auto max-h-96 object-contain bg-black"
-                          onError={(e) => {
-                            console.error('Failed to load image:', post.imageUrl);
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                    )}
+                      {post.imageUrl && (
+                        <div className="mb-4 rounded-lg overflow-hidden">
+                          <img
+                            src={`/api/proxy-image?url=${encodeURIComponent(post.imageUrl)}`}
+                            alt={post.title}
+                            className="w-full h-auto object-cover"
+                            onError={(e) => {
+                              console.error('Failed to load image:', post.imageUrl);
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
 
-                    {post.videoUrl && (
-                      <div className="mb-4 rounded-lg overflow-hidden border border-border max-w-2xl">
-                        <video
-                          src={post.videoUrl}
-                          controls
-                          className="w-full h-auto max-h-96 bg-black"
-                        />
-                      </div>
-                    )}
+                      {post.videoUrl && (
+                        <div className="mb-4 rounded-lg overflow-hidden">
+                          <video
+                            src={post.videoUrl}
+                            controls
+                            className="w-full h-auto"
+                          />
+                        </div>
+                      )}
 
-                    <p className="text-gray-300 leading-relaxed mb-4 whitespace-pre-wrap">
-                      {post.content}
-                    </p>
+                      <p className="text-gray-300 leading-relaxed mb-4 whitespace-pre-wrap">
+                        {post.content}
+                      </p>
 
-                    {post.tags && post.tags.length > 0 && (
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Tag size={14} className="text-gray-500" />
-                        {post.tags.map((tag, i) => (
-                          <span
-                            key={i}
-                            className="text-xs bg-surface border border-border px-3 py-1 rounded-full text-gray-400"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </motion.article>
-                ))}
+                      {post.tags && post.tags.length > 0 && (
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Tag size={14} className="text-gray-500" />
+                          {post.tags.map((tag, i) => (
+                            <span
+                              key={i}
+                              className="text-xs bg-surface border border-border px-3 py-1 rounded-full text-gray-400"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </motion.article>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -387,104 +389,115 @@ export default function GovernmentPage() {
                 <p className="text-xl text-gray-400">Голосований пока нет</p>
               </motion.div>
             ) : (
-              <div className="space-y-6">
-                {votings.map((voting, index) => {
-                  const totalVotes = voting.options.reduce((sum, opt) => sum + opt.votes, 0);
-                  const hasVoted = user && voting.votes[user.uuid];
-                  const isActive = voting.active && new Date(voting.endsAt) > new Date();
-                  const showResults = !voting.anonymous || !isActive || hasVoted;
+              <div className="flex justify-center">
+                <div className="space-y-6 w-full max-w-3xl">
+                  {votings.map((voting, index) => {
+                    const totalVotes = voting.options.reduce((sum, opt) => sum + opt.votes, 0);
+                    const hasVoted = user && voting.votes[user.uuid];
+                    const isActive = voting.active && new Date(voting.endsAt) > new Date();
+                    const showResults = !voting.anonymous || !isActive || hasVoted;
 
-                  return (
-                    <motion.div
-                      key={voting.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="bg-card border border-border rounded-2xl p-8"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <h2 className="text-3xl font-bold mb-2 text-white">
-                            {voting.title}
-                          </h2>
-                          <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                            <span className="flex items-center gap-1">
-                              <User size={14} />
-                              {voting.createdBy}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Calendar size={14} />
-                              До {new Date(voting.endsAt).toLocaleDateString('ru-RU')}
-                            </span>
-                          </div>
-                          <p className="text-gray-400 mb-4">{voting.description}</p>
-                        </div>
-                        {!isActive && (
-                          <span className="px-3 py-1 bg-red-500/20 border border-red-500/50 rounded-full text-red-400 text-sm">
-                            Завершено
-                          </span>
-                        )}
-                      </div>
-
-                      {voting.imageUrl && (
-                        <div className="mb-6 rounded-lg overflow-hidden border border-border max-w-3xl">
-                          <img
-                            src={`/api/proxy-image?url=${encodeURIComponent(voting.imageUrl)}`}
-                            alt={voting.title}
-                            className="w-full h-auto max-h-80 object-contain bg-black"
-                            onError={(e) => {
-                              console.error('Failed to load image:', voting.imageUrl);
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        </div>
-                      )}
-
-                      <div className="space-y-3">
-                        {voting.options.map((option) => {
-                          const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
-                          const isSelected = hasVoted && voting.votes[user.uuid] === option.id;
-
-                          return (
-                            <div key={option.id} className="relative">
-                              <button
-                                onClick={() => isActive && !hasVoted && handleVote(voting.id, option.id)}
-                                disabled={!isActive || hasVoted}
-                                className={`w-full text-left px-6 py-4 rounded-lg border transition-all ${
-                                  isSelected
-                                    ? 'border-primary bg-primary/10'
-                                    : hasVoted || !isActive
-                                    ? 'border-border bg-surface cursor-not-allowed'
-                                    : 'border-border bg-surface hover:border-primary hover:bg-primary/5 cursor-pointer'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between relative z-10">
-                                  <span className="font-semibold text-white">{option.text}</span>
-                                  {showResults && (
-                                    <span className="text-gray-400">
-                                      {option.votes} ({percentage.toFixed(1)}%)
-                                    </span>
-                                  )}
-                                </div>
-                                {showResults && (
-                                  <div
-                                    className="absolute inset-0 bg-primary/20 rounded-lg transition-all"
-                                    style={{ width: `${percentage}%` }}
-                                  />
-                                )}
-                              </button>
+                    return (
+                      <motion.div
+                        key={voting.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="bg-card border border-border rounded-2xl p-8"
+                      >
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <h2 className="text-3xl font-bold mb-2 text-white">
+                              {voting.title}
+                            </h2>
+                            <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                              <span className="flex items-center gap-1">
+                                <User size={14} />
+                                {voting.createdBy}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Calendar size={14} />
+                                До {new Date(voting.endsAt).toLocaleDateString('ru-RU')}
+                              </span>
                             </div>
-                          );
-                        })}
-                      </div>
+                            <p className="text-gray-400 mb-4">{voting.description}</p>
+                          </div>
+                          {!isActive && (
+                            <span className="px-3 py-1 bg-red-500/20 border border-red-500/50 rounded-full text-red-400 text-sm">
+                              Завершено
+                            </span>
+                          )}
+                        </div>
 
-                      <div className="mt-4 text-sm text-gray-500">
-                        Всего голосов: {totalVotes}
-                        {hasVoted && <span className="ml-4 text-primary">✓ Вы проголосовали</span>}
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                        {voting.imageUrl && (
+                          <div className="mb-6 rounded-lg overflow-hidden">
+                            <img
+                              src={`/api/proxy-image?url=${encodeURIComponent(voting.imageUrl)}`}
+                              alt={voting.title}
+                              className="w-full h-auto object-cover"
+                              onError={(e) => {
+                                console.error('Failed to load image:', voting.imageUrl);
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        )}
+
+                        <div className="space-y-3">
+                          {voting.options.map((option) => {
+                            const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
+                            const isSelected = hasVoted && voting.votes[user.uuid] === option.id;
+                            const votersForOption = Object.entries(voting.votes)
+                              .filter(([_, optId]) => optId === option.id)
+                              .map(([uuid]) => uuid);
+
+                            return (
+                              <div key={option.id} className="relative">
+                                <button
+                                  onClick={() => isActive && !hasVoted && handleVote(voting.id, option.id)}
+                                  disabled={!isActive || hasVoted}
+                                  className={`w-full text-left px-6 py-4 rounded-lg border transition-all ${
+                                    isSelected
+                                      ? 'border-primary bg-primary/10'
+                                      : hasVoted || !isActive
+                                      ? 'border-border bg-surface cursor-not-allowed'
+                                      : 'border-border bg-surface hover:border-primary hover:bg-primary/5 cursor-pointer'
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between relative z-10">
+                                    <span className="font-semibold text-white">{option.text}</span>
+                                    {showResults && (
+                                      <span className="text-gray-400">
+                                        {option.votes} ({percentage.toFixed(1)}%)
+                                      </span>
+                                    )}
+                                  </div>
+                                  {showResults && (
+                                    <div
+                                      className="absolute inset-0 bg-primary/20 rounded-lg transition-all"
+                                      style={{ width: `${percentage}%` }}
+                                    />
+                                  )}
+                                </button>
+                                {!voting.anonymous && showResults && votersForOption.length > 0 && (
+                                  <div className="mt-2 ml-6 text-xs text-gray-500">
+                                    Проголосовали: {votersForOption.join(', ')}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div className="mt-4 text-sm text-gray-500">
+                          Всего голосов: {totalVotes}
+                          {hasVoted && <span className="ml-4 text-primary">✓ Вы проголосовали</span>}
+                          {voting.anonymous && <span className="ml-4 text-gray-400">🔒 Анонимное</span>}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
