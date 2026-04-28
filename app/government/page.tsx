@@ -53,6 +53,7 @@ export default function GovernmentPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [votings, setVotings] = useState<Voting[]>([]);
   const [fines, setFines] = useState<Fine[]>([]);
+  const [players, setPlayers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [votingLoading, setVotingLoading] = useState(false);
   const [finesLoading, setFinesLoading] = useState(false);
@@ -62,6 +63,7 @@ export default function GovernmentPage() {
   useEffect(() => {
     checkAuth();
     fetchPosts();
+    fetchPlayers();
   }, []);
 
   useEffect(() => {
@@ -159,6 +161,23 @@ export default function GovernmentPage() {
     } finally {
       setFinesLoading(false);
     }
+  };
+
+  const fetchPlayers = async () => {
+    try {
+      const response = await fetch('/api/players');
+      if (response.ok) {
+        const data = await response.json();
+        setPlayers(data.players || []);
+      }
+    } catch (error) {
+      console.error('Error fetching players:', error);
+    }
+  };
+
+  const getPlayerName = (uuid: string) => {
+    const player = players.find(p => p.uuid === uuid);
+    return player ? player.name : uuid;
   };
 
   const canCreatePost = user && (user.role === 'media' || user.role === 'president');
@@ -481,7 +500,7 @@ export default function GovernmentPage() {
                                 </button>
                                 {!voting.anonymous && showResults && votersForOption.length > 0 && (
                                   <div className="mt-2 ml-6 text-xs text-gray-500">
-                                    Проголосовали: {votersForOption.join(', ')}
+                                    Проголосовали: {votersForOption.map(uuid => getPlayerName(uuid)).join(', ')}
                                   </div>
                                 )}
                               </div>
