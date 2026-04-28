@@ -124,14 +124,6 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
             }
           } else {
             const govData = await govResponse.json();
-            // Получаем баланс для государственного счета
-            const govBalanceResponse = await fetch(`/api/bank/balance?accountNumber=0000`);
-            if (govBalanceResponse.ok) {
-              const govBalanceData = await govBalanceResponse.json();
-              govData.balance = govBalanceData.balance;
-            } else {
-              govData.balance = 0;
-            }
             setGovernmentAccount(govData);
           }
         } catch (govError) {
@@ -156,10 +148,10 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
             id: `${tx.timestamp}-${tx.type}`,
             type: tx.type === 'deposit' ? 'incoming' : 'outgoing',
             amount: tx.amount,
-            from: tx.executorName,
-            to: tx.playerName,
+            from: tx.executorName || 'Система',
+            to: tx.playerName || 'Неизвестно',
             timestamp: new Date(tx.timestamp).getTime(),
-            description: tx.type === 'deposit' ? 'Пополнение' : 'Снятие',
+            description: tx.description || (tx.type === 'deposit' ? 'Пополнение' : 'Снятие'),
           }));
           setTransactions(formattedTransactions);
         }
