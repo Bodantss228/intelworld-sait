@@ -68,13 +68,14 @@ interface Fine {
   paid: boolean;
 }
 
-type TabType = 'wallet' | 'timeline' | 'government' | 'players';
+type TabType = 'wallet' | 'timeline' | 'players' | 'transactions';
 type GovernmentSubTab = 'news' | 'voting' | 'fines' | 'notifications';
 
 export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [allTransactions, setAllTransactions] = useState<any[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [votings, setVotings] = useState<Voting[]>([]);
   const [fines, setFines] = useState<Fine[]>([]);
@@ -92,8 +93,10 @@ export default function ProfilePage() {
   useEffect(() => {
     if (activeTab === 'players') {
       fetchPlayers();
+    } else if (activeTab === 'transactions' && profile?.role === 'banker') {
+      fetchAllTransactions();
     }
-  }, [activeTab]);
+  }, [activeTab, profile]);
 
   const fetchProfile = async () => {
     try {
@@ -190,6 +193,20 @@ export default function ProfilePage() {
       }
     } catch (error) {
       console.error('Error fetching players:', error);
+    }
+  };
+
+  const fetchAllTransactions = async () => {
+    try {
+      if (!profile?.uuid) return;
+
+      const response = await fetch(`/api/bank/transactions/all?bankerUuid=${profile.uuid}&limit=100`);
+      if (response.ok) {
+        const data = await response.json();
+        setAllTransactions(data.transactions || []);
+      }
+    } catch (error) {
+      console.error('Error fetching all transactions:', error);
     }
   };
 
@@ -416,6 +433,20 @@ export default function ProfilePage() {
                 <span className="font-medium">Игроки</span>
               </button>
 
+              {profile?.role === 'banker' && (
+                <button
+                  onClick={() => setActiveTab('transactions')}
+                  className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${
+                    activeTab === 'transactions'
+                      ? 'bg-yellow-500/10 text-yellow-500 border-l-4 border-yellow-500'
+                      : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <History size={20} />
+                  <span className="font-medium">Транзакции</span>
+                </button>
+              )}
+
               <Link
                 href="/government"
                 className="w-full flex items-center gap-3 px-4 py-3 transition-colors text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -544,6 +575,60 @@ export default function ProfilePage() {
                           {player.description && (
                             <p className="text-sm text-gray-400 mt-2">{player.description}</p>
                           )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'transactions' && profile?.role === 'banker' && (
+              <div className="space-y-6">
+                <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+                  <h3 className="text-2xl font-bold mb-6">Все транзакции сервера</h3>
+
+                  {allTransactions.length === 0 ? (
+                    <div className="text-center py-12 text-gray-400">
+                      <History size={48} className="mx-auto mb-4 opacity-50" />
+                      <p>Загрузка транзакций...</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {allTransactions.map((tx: any, index: number) => (
+                        <div key={index} className="bg-black/50 border border-gray-800 rounded-lg p-4 hover:border-yellow-500/30 transition-colors">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                                  tx.type === 'deposit' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                                }`}>
+                                  {tx.type === 'deposit' ? 'Пополнение' : 'Снятие'}
+                                </span>
+                                <span className="text-gray-400 text-sm">
+                                  {new Date(tx.timestamp).toLocaleString('ru-RU')}
+                                </span>
+                              </div>
+                              <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                  <p className="text-gray-500">Игрок:</p>
+                                  <p className="text-white font-medium">{tx.playerName}</p>
+                                </div>
+                                <div>
+                                  <p className="text-gray-500">Исполнитель:</p>
+                                  <p className="text-white font-medium">{tx.executorName}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right ml-4">
+                              <p className={`text-2xl font-bold ${
+                                tx.type === 'deposit' ? 'text-green-400' : 'text-red-400'
+                              }`}>
+                                {tx.type === 'deposit' ? '+' : '-'}{tx.amount}
+                              </p>
+                              <p className="text-xs text-gray-500">Баланс: {tx.balanceAfter}</p>
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>

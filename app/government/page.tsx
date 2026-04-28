@@ -311,6 +311,10 @@ export default function GovernmentPage() {
                           src={post.imageUrl}
                           alt={post.title}
                           className="w-full h-auto max-h-96 object-cover"
+                          onError={(e) => {
+                            console.error('Failed to load image:', post.imageUrl);
+                            e.currentTarget.style.display = 'none';
+                          }}
                         />
                       </div>
                     )}
@@ -428,6 +432,10 @@ export default function GovernmentPage() {
                             src={voting.imageUrl}
                             alt={voting.title}
                             className="w-full h-auto max-h-64 object-cover"
+                            onError={(e) => {
+                              console.error('Failed to load image:', voting.imageUrl);
+                              e.currentTarget.style.display = 'none';
+                            }}
                           />
                         </div>
                       )}

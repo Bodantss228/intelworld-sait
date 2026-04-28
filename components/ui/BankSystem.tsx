@@ -42,7 +42,16 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
   const [transferAmount, setTransferAmount] = useState('');
   const [transferRecipient, setTransferRecipient] = useState('');
   const [transferDescription, setTransferDescription] = useState('');
+  const [exchangeRates, setExchangeRates] = useState([
+    { from: 'Алмазы', to: 'Изумруды', rate: 1.5, icon: '💎' },
+    { from: 'Алмазы', to: 'Золото', rate: 9, icon: '💰' },
+    { from: 'Изумруды', to: 'Золото', rate: 6, icon: '🟢' },
+    { from: 'Незерит', to: 'Алмазы', rate: 4, icon: '⬛' },
+  ]);
+  const [editingRate, setEditingRate] = useState<number | null>(null);
+  const [editRateValue, setEditRateValue] = useState('');
 
+  const isBanker = role === 'banker';
   const isPresident = role === 'president';
 
   useEffect(() => {
@@ -160,12 +169,29 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
     }
   };
 
-  const exchangeRates = [
-    { from: 'Алмазы', to: 'Изумруды', rate: 1.5, icon: '💎' },
-    { from: 'Алмазы', to: 'Золото', rate: 9, icon: '💰' },
-    { from: 'Изумруды', to: 'Золото', rate: 6, icon: '🟢' },
-    { from: 'Незерит', to: 'Алмазы', rate: 4, icon: '⬛' },
-  ];
+  const handleEditRate = (index: number) => {
+    setEditingRate(index);
+    setEditRateValue(exchangeRates[index].rate.toString());
+  };
+
+  const handleSaveRate = (index: number) => {
+    const newRate = parseFloat(editRateValue);
+    if (isNaN(newRate) || newRate <= 0) {
+      alert('Введите корректное значение курса');
+      return;
+    }
+
+    const newRates = [...exchangeRates];
+    newRates[index].rate = newRate;
+    setExchangeRates(newRates);
+    setEditingRate(null);
+    setEditRateValue('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingRate(null);
+    setEditRateValue('');
+  };
 
   const handleTransfer = async () => {
     if (!account || !transferAmount || !transferRecipient) {
@@ -492,7 +518,7 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
         </div>
       )}
 
-      {/* Кредиты */}
+      {/* Курсы обмена */}
       {activeTab === 'rates' && (
         <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
           <h3 className="text-2xl font-bold mb-6">Курсы обмена</h3>
@@ -502,20 +528,64 @@ export default function BankSystem({ username, uuid, initialBalance, role }: Ban
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-3xl">{rate.icon}</div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-yellow-500">{rate.rate}x</p>
+                    {editingRate === index && isBanker ? (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={editRateValue}
+                          onChange={(e) => setEditRateValue(e.target.value)}
+                          className="w-20 px-2 py-1 bg-gray-800 border border-gray-700 rounded text-yellow-500 text-xl font-bold text-right"
+                          autoFocus
+                        />
+                        <span className="text-yellow-500 text-xl font-bold">x</span>
+                      </div>
+                    ) : (
+                      <p className="text-2xl font-bold text-yellow-500">{rate.rate}x</p>
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-sm mb-4">
                   <span className="text-gray-400">{rate.from}</span>
                   <span className="text-gray-600">→</span>
                   <span className="text-gray-300">{rate.to}</span>
                 </div>
+                {isBanker && (
+                  <div className="flex gap-2">
+                    {editingRate === index ? (
+                      <>
+                        <button
+                          onClick={() => handleSaveRate(index)}
+                          className="flex-1 px-3 py-2 bg-green-500 hover:bg-green-600 text-white text-sm rounded transition-colors"
+                        >
+                          Сохранить
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="flex-1 px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded transition-colors"
+                        >
+                          Отмена
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => handleEditRate(index)}
+                        className="w-full px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-black text-sm rounded transition-colors font-semibold"
+                      >
+                        Изменить курс
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
           <div className="mt-6 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
             <p className="text-sm text-gray-400">
-              Курсы обновляются администрацией сервера. Обмен валюты доступен в банке на спавне.
+              {isBanker
+                ? 'Вы можете изменять курсы обмена. Изменения применяются сразу для всех игроков.'
+                : 'Курсы обновляются банкирами сервера. Обмен валюты доступен в банке на спавне.'
+              }
             </p>
           </div>
         </div>
