@@ -61,7 +61,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <span className="text-primary glow-gold">Intel</span>
+            <span className="text-primary glow-gold">Intell</span>
             <span className="text-white">World</span>
           </motion.h1>
 
@@ -71,7 +71,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.4 }}
           >
-            Сезон 5: <span className="text-secondary italic">"What If..."</span>
+            Сезон 5: <span className="text-red-500 italic">"What If..."</span>
           </motion.div>
 
           <motion.div
@@ -143,7 +143,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { name: 'Что если Костя стал натуралом', desc: 'Скоро откроется' },
+                { name: 'Что если', desc: 'Костя стал натуралом' },
                 { name: '???', desc: 'Скоро откроется' },
                 { name: '???', desc: 'Скоро откроется' },
                 { name: '???', desc: 'Скоро откроется' },

@@ -5,11 +5,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-1">
             <h3 className="text-2xl font-bold mb-3">
-              <span className="text-primary">Intel</span>
+              <span className="text-primary">Intell</span>
               <span className="text-white">World</span>
             </h3>
             <p className="text-gray-400 mb-4 max-w-md">
-              Юбилейный 5-й сезон. Тема "What If..." - исследование альтернативных реальностей вселенной IntelWorld.
+              Юбилейный 5-й сезон. Тема "What If..." - исследование альтернативных реальностей вселенной IntellWorld.
             </p>
             <p className="text-sm text-gray-500">
               Почти ванилла 1.21.8
@@ -82,10 +82,10 @@ export default function Footer() {
 
         <div className="border-t border-border mt-8 pt-6">
           <p className="text-gray-500 text-sm mb-2">
-            &copy; 2026 IntelWorld. Все права у админов.
+            &copy; 2026 IntellWorld. Все права у админов.
           </p>
           <p className="text-gray-600 text-xs">
-            ИП СИДОРОВ БОГДАН САНЫЧ (ИНН 694267522849 ОГРНИП 123456789098765)
+            НП СИДОРОВ БОГДАН САНЫЧ (ИНН 694267522849 ОГРНИП 123456789098765)
           </p>
         </div>
       </div>
