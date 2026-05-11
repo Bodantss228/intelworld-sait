@@ -13,7 +13,7 @@ export async function GET() {
     }
 
     // Получаем данные через API мода
-    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://localhost:8228';
+    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://localhost:8118';
     let balance = 0;
     let role = '';
 

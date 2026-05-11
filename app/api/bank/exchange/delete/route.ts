@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://white.fnode.me:8228';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://purple.fnode.me:8118';
 
 export async function DELETE(request: NextRequest) {
   try {

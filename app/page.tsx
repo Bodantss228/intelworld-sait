@@ -2,12 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { Copy, Users, Zap } from 'lucide-react';
-import MagneticButton from '@/components/ui/MagneticButton';
 
 export default function Home() {
-  const [stats, setStats] = useState<any>({ online: 0, maxPlayers: 100, version: '1.21.8', tps: 0 });
+  const [stats, setStats] = useState<any>({ online: 0, maxPlayers: 100, version: '1.21.8', tps: 20 });
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -22,7 +20,6 @@ export default function Home() {
     };
 
     fetchStats();
-    // Update every 30 seconds
     const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -35,92 +32,67 @@ export default function Home() {
 
   return (
     <div className="relative">
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-        <div className="absolute inset-0 z-0">
-          <video
-            className="absolute inset-0 w-full h-full object-cover opacity-40"
-            autoPlay
-            loop
-            muted
-            playsInline
-          >
-            <source src="/video1_smooth.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black" />
-        </div>
+      <section
+        className="relative min-h-screen overflow-hidden bg-black bg-cover bg-center"
+        style={{ backgroundImage: "url('/background.png')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-black/35 via-transparent to-black/10" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/75 to-transparent" />
 
-        <div className="absolute inset-0 opacity-20 z-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-secondary/30 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        </div>
-
-        <div className="container mx-auto px-6 text-center relative z-10">
-          <motion.h1
-            className="text-7xl md:text-9xl font-bold mb-4"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-          >
-            <span className="text-primary glow-gold">Intell</span>
-            <span className="text-white">World</span>
-          </motion.h1>
-
+        <div className="relative z-10 min-h-screen px-5 pb-10 pt-28 sm:px-8 lg:px-12">
           <motion.div
-            className="text-xl md:text-3xl text-gray-400 mb-12 font-light"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.4 }}
-          >
-            Сезон 5: <span className="text-red-500 italic">"What If..."</span>
-          </motion.div>
-
-          <motion.div
-            className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16"
-            initial={{ opacity: 0, y: 20 }}
+            className="absolute bottom-8 left-5 w-[min(360px,calc(100vw-2.5rem))] sm:bottom-10 sm:left-8 lg:bottom-14 lg:left-12"
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <MagneticButton
-              className="bg-primary text-black px-10 py-4 rounded-lg font-bold text-lg hover:bg-primary/90 transition-all"
+            <button
+              type="button"
               onClick={copyServerIP}
+              className="group flex w-full items-center justify-between gap-3 rounded-md border border-white/15 bg-black/45 px-4 py-3 text-left text-white shadow-2xl backdrop-blur-md transition hover:border-primary/60 hover:bg-black/60"
+              aria-label="Скопировать IP сервера"
             >
-              {copied ? 'Скопировано!' : 'play.intelworld.ru'}
-              <Copy className="inline ml-2" size={20} />
-            </MagneticButton>
+              <span className="min-w-0 truncate text-lg font-semibold">
+                {copied ? 'Скопировано!' : 'play.intelworld.ru'}
+              </span>
+              <Copy className="shrink-0 text-primary transition group-hover:scale-105" size={20} />
+            </button>
 
-            <div className="flex items-center gap-6 text-gray-400">
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${stats.online > 0 ? 'bg-success animate-pulse' : 'bg-gray-600'}`} />
-                <Users size={20} className={stats.online > 0 ? 'text-success' : 'text-gray-600'} />
-                <span className="text-sm">
-                  <span className="text-white font-semibold">{stats.online}</span>
-                </span>
+            <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-md border border-white/10 bg-black/40 text-white shadow-xl backdrop-blur-md">
+              <div className="flex min-h-20 flex-col justify-center border-r border-white/10 px-4">
+                <div className="flex items-center gap-2 text-xs uppercase text-gray-400">
+                  <Users size={14} />
+                  Онлайн
+                </div>
+                <div className="mt-2 text-2xl font-bold">{stats.online}</div>
               </div>
-              <div className="w-px h-6 bg-gray-700" />
-              <div className="flex items-center gap-2">
-                <Zap size={20} className="text-primary" />
-                <span className="text-sm">{stats.version}</span>
+
+              <div className="flex min-h-20 flex-col justify-center border-r border-white/10 px-4">
+                <div className="flex items-center gap-2 text-xs uppercase text-gray-400">
+                  <Zap size={14} />
+                  Версия
+                </div>
+                <div className="mt-2 text-lg font-semibold">{stats.version}</div>
               </div>
-              {stats.tps && (
-                <>
-                  <div className="w-px h-6 bg-gray-700" />
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">TPS: <span className={stats.tps >= 19 ? 'text-success' : 'text-yellow-500'}>{stats.tps.toFixed(1)}</span></span>
-                  </div>
-                </>
-              )}
+
+              <div className="flex min-h-20 flex-col justify-center px-4">
+                <div className="text-xs uppercase text-gray-400">TPS</div>
+                <div className={`mt-2 text-lg font-semibold ${stats.tps >= 19 ? 'text-success' : 'text-yellow-500'}`}>
+                  {Number(stats.tps || 0).toFixed(1)}
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
 
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="absolute bottom-10 left-1/2 z-10 -translate-x-1/2 transform">
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="text-gray-600"
+            className="text-gray-500"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M12 5v14M19 12l-7 7-7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 5v14M19 12l-7 7-7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </motion.div>
         </div>

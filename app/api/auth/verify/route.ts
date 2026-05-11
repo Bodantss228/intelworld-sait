@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Проверяем код через API сервера Minecraft
-    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://localhost:8080';
+    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://purple.fnode.me:8118';
 
     try {
       const response = await fetch(`${serverUrl}/api/auth/verify`, {

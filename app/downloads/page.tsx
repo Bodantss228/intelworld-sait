@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { Download, ChevronDown, ChevronUp, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
-import MagneticButton from '@/components/ui/MagneticButton';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const MODPACK_DOWNLOAD_URL =
+  'https://github.com/Bodantss228/IntellWorld-What-If-sbork/releases/download/Tag_version_v1/IntellWorld.What.If.zip';
 
 export default function DownloadsPage() {
   const [expandedLauncher, setExpandedLauncher] = useState<string | null>(null);
@@ -16,8 +18,8 @@ export default function DownloadsPage() {
         'Скачайте и установите TLauncher',
         'Скачайте ZIP-архив модпака выше',
         'Распакуйте папку в .minecraft/versions',
-        'В TLauncher выберите версию 1.21.8',
-        'Запустите игру и подключитесь к play.intelworld.ru',
+        'В TLauncher в списке версий выберите IntellWorld What If',
+        'Запустите игру и кайфуйте',
       ],
     },
     {
@@ -26,9 +28,7 @@ export default function DownloadsPage() {
       steps: [
         'Скачайте ZIP-архив модпака выше',
         'Распакуйте в папку .minecraft/versions',
-        'Установите Fabric Loader 1.21.8',
-        'Запустите Minecraft с профилем Fabric',
-        'Добавьте сервер: play.intelworld.ru',
+        'Дальше сами',
       ],
     },
   ];
@@ -55,14 +55,17 @@ export default function DownloadsPage() {
             <div className="flex items-center justify-center gap-6 mb-8">
               <div className="text-left">
                 <p className="text-sm text-gray-500">Дата обновления</p>
-                <p className="text-lg font-semibold">Админы еще трудятся</p>
+                <p className="text-lg font-semibold">2 мая 2026</p>
               </div>
             </div>
 
-            <MagneticButton className="bg-primary text-black px-10 py-4 rounded-lg font-bold text-lg hover:bg-primary/90 transition-all inline-flex items-center gap-2">
+            <a
+              href={MODPACK_DOWNLOAD_URL}
+              className="bg-primary text-black px-10 py-4 rounded-lg font-bold text-lg hover:bg-primary/90 transition-all inline-flex items-center gap-2"
+            >
               <Download size={24} />
               Скачать модпак
-            </MagneticButton>
+            </a>
           </div>
 
           <div className="bg-card border border-border rounded-2xl p-8 mb-12">

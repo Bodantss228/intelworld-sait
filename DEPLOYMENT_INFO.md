@@ -44,20 +44,20 @@ sftp -P 2022 -i ~/.ssh/faithnode_key kakat_stoia.a8971ece@white.ru.faithnode.net
 
 ### Основная информация
 ```
-IP: white.fnode.me:19155 (для игроков: play.intelworld.ru)
+IP: purple.fnode.me:25606 (для игроков: play.intelworld.ru)
 Версия: Fabric 1.21.8
 Открытые порты:
-  - 19155 (Minecraft)
-  - 8228 (Bank API)
-  - 8316 (Dynmap)
+  - 25606 (Minecraft)
+  - 8118 (Bank API)
+  - 25522 (Dynmap)
   - 8317 (свободный)
 ```
 
 ### Dynmap
 ```
-URL: http://white.fnode.me:8316
+URL: http://purple.fnode.me:25522
 Статус: Работает
-Примечание: Порт был занят, поэтому Bank API перенесен на 8228
+Примечание: Порт был занят, поэтому Bank API перенесен на 8118
 ```
 
 ---
@@ -75,7 +75,7 @@ URL: http://white.fnode.me:8316
 ```
 
 ### Функционал мода
-1. **Bank API Server** (порт 8228)
+1. **Bank API Server** (порт 8118)
    - Генерация кодов для авторизации
    - Проверка кодов
    - Получение баланса игроков
@@ -88,7 +88,7 @@ URL: http://white.fnode.me:8316
 
 ### API Endpoints мода
 
-**POST** `http://white.fnode.me:8228/api/auth/verify`
+**POST** `http://purple.fnode.me:8118/api/auth/verify`
 ```json
 Request:
 {
@@ -109,7 +109,7 @@ Response (error):
 }
 ```
 
-**GET** `http://white.fnode.me:8228/api/bank/balance?uuid=...`
+**GET** `http://purple.fnode.me:8118/api/bank/balance?uuid=...`
 ```json
 Response:
 {
@@ -168,7 +168,7 @@ URL: https://sait-intel.vercel.app
 ### Переменные окружения Vercel
 ```
 JWT_SECRET=intelworld-super-secret-key-change-me-in-production-2026
-MINECRAFT_SERVER_URL=http://white.fnode.me:8228
+MINECRAFT_SERVER_URL=http://purple.fnode.me:8118
 ```
 
 **Как обновить переменные:**
@@ -198,7 +198,7 @@ vercel --prod
 ### .env.local (локальная разработка)
 ```
 JWT_SECRET=intelworld-super-secret-key-change-me-in-production-2026
-MINECRAFT_SERVER_URL=http://white.fnode.me:8228
+MINECRAFT_SERVER_URL=http://purple.fnode.me:8118
 MINECRAFT_DATA_DIR=
 ```
 
@@ -260,7 +260,7 @@ MINECRAFT_DATA_DIR=
    ↓
 4. Игрок открывает сайт → вводит ник + код
    ↓
-5. Сайт → POST http://white.fnode.me:8228/api/auth/verify
+5. Сайт → POST http://purple.fnode.me:8118/api/auth/verify
    ↓
 6. Мод проверяет код → возвращает UUID и username
    ↓
@@ -281,7 +281,7 @@ MINECRAFT_DATA_DIR=
 1. Проверь что мод установлен: `/mods/intelworld-bank-and-bridge-1.0.0.jar`
 2. Проверь логи сервера:
    ```
-   [IntelWorld Bank API] Bank API Server started on port 8228
+   [IntelWorld Bank API] Bank API Server started on port 8118
    [IntelWorld Bridge] Bridge enabled, sending data to https://minecraftic.ru/api/server/update
    ```
 3. Проверь конфиг: `/config/intelworld-bridge.json`
@@ -293,9 +293,9 @@ MINECRAFT_DATA_DIR=
 **Причина:** Сайт не может достучаться до Bank API
 
 **Решение:**
-1. Проверь что порт 8228 открыт:
+1. Проверь что порт 8118 открыт:
    ```bash
-   curl http://white.fnode.me:8228/api/bank/balance?uuid=test
+   curl http://purple.fnode.me:8118/api/bank/balance?uuid=test
    ```
 2. Проверь переменную `MINECRAFT_SERVER_URL` на Vercel
 3. Проверь что мод запущен (логи сервера)
@@ -309,12 +309,12 @@ MINECRAFT_DATA_DIR=
 2. Проверь регистр (код чувствителен к регистру)
 3. Проверь что ник написан правильно
 
-### Порт 8228 занят
+### Порт 8118 занят
 
 **Причина:** Другой процесс использует порт
 
 **Решение:**
-1. Найди процесс: `netstat -an | grep 8228`
+1. Найди процесс: `netstat -an | grep 8118`
 2. Останови процесс
 3. Или измени порт в `BankApiServer.java` (строка 23)
 
@@ -327,7 +327,7 @@ MINECRAFT_DATA_DIR=
 C:\Users\grinb\mod bank\
 ├── src\main\java\com\intelworld\
 │   ├── bank\
-│   │   ├── api\BankApiServer.java          # HTTP API сервер (порт 8228)
+│   │   ├── api\BankApiServer.java          # HTTP API сервер (порт 8118)
 │   │   ├── commands\AccountCommands.java   # Команда /account link
 │   │   ├── data\BankDataManager.java       # Работа с балансами
 │   │   └── data\VerificationCodeManager.java # Генерация кодов
@@ -385,7 +385,7 @@ vercel --prod
 ### Проверить что API работает
 ```bash
 # Bank API
-curl http://white.fnode.me:8228/api/bank/balance?uuid=test
+curl http://purple.fnode.me:8118/api/bank/balance?uuid=test
 
 # Сайт статистика
 curl https://minecraftic.ru/api/stats
@@ -397,7 +397,7 @@ curl https://minecraftic.ru/api/stats
 
 ### 2026-04-20 (текущая версия)
 - ✅ Объединены моды bank и bridge в один JAR
-- ✅ Изменен порт Bank API с 8080 → 8317 → 8228 (из-за конфликтов)
+- ✅ Изменен порт Bank API с 8080 → 8317 → 8118 (из-за конфликтов)
 - ✅ Обновлен Bridge конфиг: apiUrl = https://minecraftic.ru/api/server/update
 - ✅ Создан endpoint `/api/server/update` на сайте
 - ✅ Настроен SFTP доступ с SSH ключом
@@ -425,9 +425,9 @@ curl https://minecraftic.ru/api/stats
    - Одноразовые (после использования удаляются)
 
 3. **Порты**
-   - 8228 - Bank API (авторизация, балансы)
-   - 8316 - Dynmap (карта)
-   - 19155 - Minecraft сервер
+   - 8118 - Bank API (авторизация, балансы)
+   - 25522 - Dynmap (карта)
+   - 25606 - Minecraft сервер
 
 4. **Безопасность**
    - JWT токены живут 7 дней

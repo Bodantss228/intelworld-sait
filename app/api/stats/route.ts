@@ -6,7 +6,7 @@ export const revalidate = 0;
 export async function GET() {
   try {
     // Получаем статистику напрямую от мода
-    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://localhost:8228';
+    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://localhost:8118';
 
     try {
       const response = await fetch(`${serverUrl}/api/server/stats`, {

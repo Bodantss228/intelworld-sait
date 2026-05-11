@@ -169,15 +169,28 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
       if (response.ok) {
         const data = await response.json();
         if (data.transactions && Array.isArray(data.transactions)) {
+          const extractRecipient = (desc?: string) => {
+            if (!desc) return null;
+            // Ожидаемый формат: "<что угодно> → <получатель>"
+            const arrowIdx = desc.lastIndexOf('→');
+            if (arrowIdx === -1) return null;
+            const recipient = desc.slice(arrowIdx + 1).trim();
+            return recipient || null;
+          };
+
           // Преобразуем транзакции в нужный формат
           const formattedTransactions = data.transactions.map((tx: any) => ({
             id: `${tx.timestamp}-${tx.type}`,
             type: tx.type === 'deposit' ? 'incoming' : 'outgoing',
             amount: tx.amount,
             from: tx.executorName || 'Система',
-            to: tx.playerName || 'Неизвестно',
+            // Для withdraw (outgoing) tx.playerName — это владелец счета (обычно ты),
+            // поэтому для "Кому" пытаемся достать получателя из description.
+            to: (tx.type === 'withdraw' ? extractRecipient(tx.description) : null) || tx.playerName || 'Неизвестно',
             timestamp: new Date(tx.timestamp).getTime(),
-            description: tx.description || (tx.type === 'deposit' ? 'Пополнение' : 'Снятие'),
+            // Если в description служебно дописан получатель ("... → Nick"),
+            // не показываем эту часть в UI, но используем её для поля "Кому".
+            description: (tx.description ? String(tx.description).split('→')[0].trim() : '') || (tx.type === 'deposit' ? 'Пополнение' : 'Снятие'),
           }));
           setTransactions(formattedTransactions);
         }
@@ -265,7 +278,7 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
       return;
     }
 
-    const amount = parseFloat(transferAmount);
+    const amount = Math.round(Number(transferAmount));
     const currentAccount = activeAccountType === 'government' ? governmentAccount : account;
 
     if (!currentAccount) {
@@ -273,7 +286,7 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
       return;
     }
 
-    if (amount <= 0) {
+    if (!Number.isFinite(amount) || amount <= 0) {
       alert('Сумма должна быть больше 0');
       return;
     }
@@ -289,7 +302,7 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           recipient: transferRecipient,
-          amount: amount,
+          amount,
           description: transferDescription || 'Перевод',
           transferType: transferTab,
           fromAccount: activeAccountType === 'government' ? '0000' : undefined,
@@ -508,6 +521,8 @@ export default function BankSystem({ username, uuid, initialBalance, role, isBan
                 value={transferAmount}
                 onChange={(e) => setTransferAmount(e.target.value)}
                 placeholder="0"
+                min={1}
+                step={1}
                 className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
               />
               <p className="text-xs text-gray-500 mt-1">Доступно: {currentBalance} алмазов</p>

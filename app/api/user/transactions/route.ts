@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50');
 
     // Получаем транзакции через API мода
-    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://localhost:8228';
+    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://localhost:8118';
     let transactions = [];
 
     try {

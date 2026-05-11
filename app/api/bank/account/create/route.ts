@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const { playerUuid, playerName } = body;
 
     // Отправляем запрос на мод для создания счета
-    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://localhost:8228';
+    const serverUrl = process.env.MINECRAFT_SERVER_URL || 'http://localhost:8118';
 
     try {
       const response = await fetch(`${serverUrl}/api/bank/account/create`, {

@@ -57,6 +57,7 @@ export default function GovernmentPage() {
   const [loading, setLoading] = useState(true);
   const [votingLoading, setVotingLoading] = useState(false);
   const [finesLoading, setFinesLoading] = useState(false);
+  const [payingFineId, setPayingFineId] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'news' | 'voting' | 'fines' | 'notifications'>('news');
 
@@ -146,15 +147,16 @@ export default function GovernmentPage() {
   const fetchFines = async () => {
     setFinesLoading(true);
     try {
-      let url = '/api/government/fines';
-      if (user && user.role !== 'president') {
-        url += `?uuid=${user.uuid}`;
-      }
-
-      const response = await fetch(url);
+      const response = await fetch('/api/government/fines');
       if (response.ok) {
         const data = await response.json();
-        setFines(data);
+        const finesArray = Array.isArray(data) ? data : [];
+        finesArray.sort((a: any, b: any) => {
+          const aTime = new Date(a.issuedAt).getTime();
+          const bTime = new Date(b.issuedAt).getTime();
+          return bTime - aTime; // новые сверху
+        });
+        setFines(finesArray);
       }
     } catch (error) {
       console.error('Error fetching fines:', error);
@@ -172,6 +174,70 @@ export default function GovernmentPage() {
       }
     } catch (error) {
       console.error('Error fetching players:', error);
+    }
+  };
+
+  const handlePayFine = async (fineId: string) => {
+    if (!user) {
+      alert('Необходимо авторизоваться');
+      router.push('/login');
+      return;
+    }
+
+    setPayingFineId(fineId);
+    try {
+      const response = await fetch('/api/government/fine/pay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fineId }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || 'Ошибка при оплате штрафа');
+      }
+
+      alert('Штраф оплачен!');
+      await fetchFines();
+      await checkAuth();
+    } catch (error: any) {
+      alert(error?.message || 'Ошибка при оплате штрафа');
+    } finally {
+      setPayingFineId(null);
+    }
+  };
+
+  const handleDeleteFine = async (fineId: string) => {
+    if (!user) {
+      alert('Необходимо авторизоваться');
+      router.push('/login');
+      return;
+    }
+
+    if (user.role !== 'president') {
+      alert('Недостаточно прав');
+      return;
+    }
+
+    if (!confirm('Удалить этот штраф?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/government/fine/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fineId }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || 'Ошибка при удалении штрафа');
+      }
+
+      await fetchFines();
+    } catch (error: any) {
+      alert(error?.message || 'Ошибка при удалении штрафа');
     }
   };
 
@@ -603,12 +669,24 @@ export default function GovernmentPage() {
                       <p className="text-gray-300">{fine.reason}</p>
                     </div>
 
+                    {isPresident && (
+                      <button
+                        onClick={() => handleDeleteFine(fine.id)}
+                        className="w-full mb-3 bg-red-500/20 border border-red-500/50 text-red-300 font-bold py-3 rounded-lg hover:bg-red-500/30 transition-colors"
+                      >
+                        Удалить штраф
+                      </button>
+                    )}
+
                     {!fine.paid && user && fine.playerUuid === user.uuid && (
                       <button
-                        onClick={() => alert('Функция оплаты штрафа будет доступна в личном кабинете')}
-                        className="w-full bg-gradient-to-r from-primary to-secondary text-black font-bold py-3 rounded-lg hover:opacity-90 transition-opacity"
+                        onClick={() => handlePayFine(fine.id)}
+                        disabled={payingFineId === fine.id}
+                        className={`w-full bg-gradient-to-r from-primary to-secondary text-black font-bold py-3 rounded-lg transition-opacity ${
+                          payingFineId === fine.id ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-90'
+                        }`}
                       >
-                        Оплатить штраф
+                        {payingFineId === fine.id ? 'Оплата...' : 'Оплатить штраф'}
                       </button>
                     )}
                   </motion.div>

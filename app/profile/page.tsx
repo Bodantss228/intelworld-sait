@@ -419,13 +419,13 @@ export default function ProfilePage() {
               </button>
 
               <a
-                href="http://white.fnode.me:8316"
+                href="http://purple.fnode.me:25522"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => {
                   e.preventDefault();
                   if (confirm('Открыть карту сервера в новой вкладке?')) {
-                    window.open('http://white.fnode.me:8316', '_blank');
+                    window.open('http://purple.fnode.me:25522', '_blank');
                   }
                 }}
                 className="w-full flex items-center gap-3 px-4 py-3 transition-colors text-gray-400 hover:bg-gray-800 hover:text-white cursor-pointer"

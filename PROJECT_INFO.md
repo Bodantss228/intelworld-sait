@@ -25,7 +25,7 @@
 4. **Галерея (/gallery/[season])** - Фото и видео из сезонов (загружаются из GitHub)
 5. **Статистика (/stats)** - Реальные данные: игроки онлайн, TPS, скины
 6. **Скачать (/downloads)** - Инструкции по установке модпака
-7. **Карта** - Прямая ссылка на Dynmap (http://white.fnode.me:8316)
+7. **Карта** - Прямая ссылка на Dynmap (http://purple.fnode.me:25522)
 
 ### API Routes
 - `/api/server/update` - Принимает данные от Fabric мода (POST), отдает live данные (GET)
@@ -73,7 +73,7 @@
 ```
 
 ## Dynmap
-**URL:** http://white.fnode.me:8316  
+**URL:** http://purple.fnode.me:25522  
 **Интеграция:** Прямая ссылка в меню (открывается в новой вкладке)  
 **Причина:** HTTP/HTTPS mixed content - нельзя встроить в iframe
 
@@ -233,7 +233,7 @@ git push origin main
 - **GitHub медиа:** https://github.com/Bodantss228/archive-season-intel
 - **Vercel проект:** sait-intel
 - **Minecraft сервер:** play.intelworld.ru
-- **Dynmap:** http://white.fnode.me:8316
+- **Dynmap:** http://purple.fnode.me:25522
 
 ## Заметки
 
